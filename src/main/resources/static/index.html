@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PromptCraft</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+      html, body {
+          background-color: #f0f2f5;
+      }
+      .container.is-max-widescreen {
+          max-width: 1200px;
+      }
+      .chat-window {
+          height: 65vh;
+          overflow-y: auto;
+          border: 1px solid #dbdbdb;
+          border-radius: 4px;
+          padding: 1rem;
+          background-color: #ffffff;
+          box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
+      }
+      .message-box {
+          white-space: pre-wrap;
+          word-wrap: break-word;
+      }
+      .message.is-player {
+          text-align: right;
+      }
+      .message.is-player .message-header {
+          background-color: #48c78e;
+          color: #fff;
+      }
+      .message.is-player .message-body {
+          border-color: #48c78e;
+      }
+      .message.is-ai .message-header {
+          background-color: #3298dc;
+          color: #fff;
+      }
+      .message.is-ai .message-body {
+          border-color: #3298dc;
+      }
+      .stat-card .card-header-title {
+          padding-bottom: 0;
+      }
+      .chat-input-container .control {
+          display: flex;
+          align-items: flex-end;
+      }
+      .chat-input-container .textarea {
+          flex-grow: 1;
+          margin-right: 0.5rem;
+          resize: none;
+      }
+      .chat-input-container .button {
+          height: auto;
+          padding: 0.75rem;
+      }
+      /* Mobile-spezifische Stile für die Panels */
+      @media screen and (max-width: 768px) {
+          #status-panel, #chat-panel {
+              display: none; /* Panels auf Mobile standardmäßig verstecken */
+          }
+          .active-panel {
+              display: block !important;
+          }
+          .main-container {
+              padding-top: 1rem;
+          }
+      }
+      @media screen and (min-width: 769px) {
+          #status-panel, #chat-panel {
+              display: block; /* Panels auf Desktop immer anzeigen */
+          }
+      }
+  </style>
+</head>
+<body>
+
+<section class="section">
+  <div class="container is-max-widescreen">
+    <h1 class="title is-1 has-text-centered">PromptCraft</h1>
+    <p class="subtitle is-6 has-text-centered mb-5">Ein textbasiertes Grand Strategy Spiel</p>
+
+    <div class="columns is-desktop">
+      <div class="column is-one-third">
+        <aside class="menu">
+          <p class="menu-label">Spielmenü</p>
+          <ul class="menu-list">
+            <li><a id="menu-status" class="is-active" onclick="showPanel('status')">Status & Rundenbericht</a></li>
+            <li><a id="menu-chat" onclick="showPanel('chat')">Befehlszentrale</a></li>
+          </ul>
+          <p class="menu-label mt-5 is-hidden-mobile">Statistiken</p>
+          <div class="is-hidden-mobile">
+            <div class="card stat-card mb-4">
+              <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-coins"></i></span> Staatskasse</p></header>
+              <div class="card-content"><p id="stat-money-desktop" class="title is-3 has-text-success">12.500</p></div>
+            </div>
+            <div class="card stat-card mb-4">
+              <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-crown"></i></span> Politische Macht</p></header>
+              <div class="card-content"><p id="stat-political-power-desktop" class="title is-3 has-text-primary">85</p></div>
+            </div>
+            <div class="card stat-card">
+              <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-brain"></i></span> Mentale Energie</p></header>
+              <div class="card-content"><p id="stat-mental-energy-desktop" class="title is-3 has-text-info">92%</p></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="column is-two-thirds">
+        <div id="status-panel" class="box has-background-white p-5 active-panel">
+          <h2 class="title is-4">Rundenbericht</h2>
+          <div id="round-summary" class="content mb-5">Warte auf die erste Runde...</div>
+
+          <div class="is-hidden-tablet">
+            <p class="menu-label mt-5">Statistiken</p>
+            <div class="card stat-card mb-4">
+              <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-coins"></i></span> Staatskasse</p></header>
+              <div class="card-content"><p id="stat-money-mobile" class="title is-3 has-text-success">12.500</p></div>
+            </div>
+            <div class="card stat-card mb-4">
+              <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-crown"></i></span> Politische Macht</p></header>
+              <div class="card-content"><p id="stat-political-power-mobile" class="title is-3 has-text-primary">85</p></div>
+            </div>
+            <div class="card stat-card">
+              <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-brain"></i></span> Mentale Energie</p></header>
+              <div class="card-content"><p id="stat-mental-energy-mobile" class="title is-3 has-text-info">92%</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="chat-panel" class="box has-background-white p-5">
+          <h2 class="title is-4">Befehlszentrale & Sub-Chats</h2>
+          <div id="chat-window" class="chat-window"></div>
+          <div class="field mt-4 chat-input-container">
+            <div class="control">
+              <textarea id="chat-input" class="textarea" rows="2" placeholder="Gib hier deinen Befehl ein. Mit Shift+Enter eine neue Zeile, mit Enter senden."></textarea>
+              <button class="button is-info is-medium" onclick="sendChatMessage()">
+                                <span class="icon">
+                                    <i class="fas fa-paper-plane"></i>
+                                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+<script>
+  const websocketUrl = 'http://localhost:8080/ws-endpoint';
+  let stompClient = null;
+
+  function connect() {
+    const socket = new SockJS(websocketUrl);
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+      console.log('Connected: ' + frame);
+      stompClient.subscribe('/topic/game-round-updates', function (message) {
+        const roundData = JSON.parse(message.body);
+        displayRoundUpdate(roundData);
+        updateStats(roundData.stats);
+      });
+      stompClient.subscribe('/topic/chat-messages', function (message) {
+        displayChatMessage(JSON.parse(message.body));
+      });
+    });
+  }
+
+  function showPanel(panelName) {
+    const panels = document.querySelectorAll('.box');
+    panels.forEach(panel => {
+      panel.classList.remove('active-panel');
+    });
+    document.getElementById(`${panelName}-panel`).classList.add('active-panel');
+
+    // Update der aktiven Menü-Links
+    const menuLinks = document.querySelectorAll('.menu-list a');
+    menuLinks.forEach(link => link.classList.remove('is-active'));
+    document.getElementById(`menu-${panelName}`).classList.add('is-active');
+  }
+
+  function displayRoundUpdate(roundData) {
+    const roundSummaryDiv = document.getElementById('round-summary');
+    if (roundSummaryDiv) {
+      roundSummaryDiv.innerHTML = `<p><strong>Runde ${roundData.roundNumber} abgeschlossen</strong></p><p>${roundData.summary}</p>`;
+    }
+  }
+
+  function updateStats(stats) {
+    if (stats) {
+      // Update der Desktop-Stats
+      document.getElementById('stat-money-desktop').textContent = stats.money;
+      document.getElementById('stat-political-power-desktop').textContent = stats.politicalPower;
+      document.getElementById('stat-mental-energy-desktop').textContent = `${stats.mentalEnergy}%`;
+      // Update der Mobile-Stats
+      document.getElementById('stat-money-mobile').textContent = stats.money;
+      document.getElementById('stat-political-power-mobile').textContent = stats.politicalPower;
+      document.getElementById('stat-mental-energy-mobile').textContent = `${stats.mentalEnergy}%`;
+    }
+  }
+
+  function displayChatMessage(chatMessage) {
+    const chatWindow = document.getElementById('chat-window');
+    const messageElement = document.createElement('article');
+    const isPlayer = chatMessage.sender === "Spieler";
+    messageElement.className = `message is-small mb-2 ${isPlayer ? 'is-player' : 'is-ai'}`;
+    messageElement.innerHTML = `
+            <div class="message-header"><p>${chatMessage.sender}</p></div>
+            <div class="message-body message-box">${chatMessage.content.replace(/\n/g, '<br>')}</div>
+        `;
+    chatWindow.appendChild(messageElement);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
+
+  function sendChatMessage() {
+    const chatInput = document.getElementById('chat-input');
+    const messageContent = chatInput.value.trim();
+    if (messageContent && stompClient) {
+      stompClient.send("/app/chat", {}, JSON.stringify({ sender: "Spieler", content: messageContent }));
+      chatInput.value = '';
+      displayChatMessage({ sender: "Spieler", content: messageContent });
+    }
+  }
+
+  document.getElementById('chat-input').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      sendChatMessage();
+    }
+  });
+
+  window.onload = function() {
+    connect();
+    // Auf Mobilgeräten standardmäßig den Chat-Panel anzeigen, wenn der Bildschirm schmal ist.
+    if (window.innerWidth <= 768) {
+      showPanel('chat');
+    } else {
+      showPanel('status');
+    }
+  };
+</script>
+
+</body>
+</html>
