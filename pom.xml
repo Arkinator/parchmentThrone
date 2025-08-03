@@ -6,26 +6,12 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.5.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
-    <artifactId>Stratotype</artifactId>
+    <groupId>io.github.arkinator</groupId>
+    <artifactId>parchmentthrone</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Stratotype</name>
-    <description>Stratotype</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
+    <name>The Parchment Throne</name>
+    <description>An AI powered Grand Strategy game</description>
     <properties>
         <java.version>17</java.version>
         <spring-ai.version>1.0.0</spring-ai.version>

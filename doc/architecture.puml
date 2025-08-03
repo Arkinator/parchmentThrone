@@ -1,0 +1,43 @@
+@startuml AI_Grand_Strategy_Architektur
+
+actor Player
+
+package "Backend" {
+  [Game Engine Agent] as Engine
+  [Tool API (MCP)] as MCP
+  [VectorDB]
+  [NoSQL] as "NoSQL DB"
+}
+
+package "Frontend" {
+  [Spieler-UI]
+}
+
+package "Conversational Agent" {
+  [Subchat Agent] as Subchat
+}
+
+Player --> "Spieler-UI"
+"Spieler-UI" --> Engine : Start Zug
+Engine --> MCP : get_basic_status
+Engine --> MCP : get_resource_status?
+Engine --> MCP : get_military_status?
+Engine --> VectorDB : (später)
+Engine --> NoSQL : (später)
+Engine --> Subchat : (optional)
+Subchat --> Engine : Ergebnis (mit YAML)
+Engine --> MCP : update_mcp_db
+Engine --> NoSQL : add_to_memory
+Engine --> "Spieler-UI" : Statusbericht
+
+note right of Engine
+  - Pro Zug einmalig initialisiert
+  - Tool-Calls gesteuert durch LLM-Logik
+end note
+
+note bottom of Subchat
+  - Persona basiert auf Kontext
+  - Gibt Entscheidung + energy_consumed zurück
+end note
+
+@enduml
