@@ -4,7 +4,8 @@ game:
   player-nation-name: Deutschland
   turn-length: "6 month"
   current-date: "1.1.1931"
-  gameEngineModel: "llmbg-tooluse-27b-v1.0-i1"
+#  gameEngineModel: "llmbg-tooluse-27b-v1.0-i1"
+  gameEngineModel: "qwen/qwen3-30b-a3b-2507"
 
 spring:
   application:

@@ -25,6 +25,7 @@ import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.ai.support.ToolCallbacks;
+import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -58,63 +59,44 @@ public class GameEngineService {
 
   private OpenAiChatModel chatModel;
   private String gameEngineSystemPrompt;
-  private String gameEngineInitPrompt;
-  private String gameEngineStatusPrompt;
-  private final List<Message> history = new ArrayList<>();
+  private String advisorSystemPrompt;
+  private GameChat statusChat;
+  private GameChat advisorChat;
 
   @SneakyThrows
   @EventListener(ApplicationReadyEvent.class)
   private void onApplicationReadyEvent() {
     generateChatModel();
     this.gameEngineSystemPrompt =
-        systemPromptResource.getContentAsString(Charset.defaultCharset()); // .split("------*");
-    //    this.gameEngineSystemPrompt = promptParts[0].trim();
-    //    this.gameEngineInitPrompt = promptParts[1].trim();
-    //    this.gameEngineStatusPrompt = promptParts[2].trim();
-  }
-
-  private String renderPrompt(String rawPrompt, Map.Entry<String, String>... additionalEntries) {
-    final ST st = new ST(rawPrompt);
-    // add all game properties to the template using reflection
-    Stream.of(gameProperties.getClass().getDeclaredFields())
-        .forEach(
-            field -> {
-              field.setAccessible(true);
-              try {
-                st.add(field.getName(), field.get(gameProperties));
-              } catch (IllegalAccessException e) {
-                throw new RuntimeException("Failed to access field: " + field.getName(), e);
-              }
-            });
-    // add additional entries to the template
-    Stream.of(additionalEntries).forEach(entry -> st.add(entry.getKey(), entry.getValue()));
-
-    return st.render();
+        systemPromptResource.getContentAsString(Charset.defaultCharset()).split("------*")[0];
+    this.advisorSystemPrompt =
+        systemPromptResource.getContentAsString(Charset.defaultCharset()).split("------*")[1];
+    statusService.updateNationStatus(
+        "germany", initJsonResource.getContentAsString(StandardCharsets.UTF_8));
   }
 
   @GetMapping("/game/start-status-report")
   @SneakyThrows
   public GameStatusDataDto getStartStatusReport() {
-    val initMessage =
-        new UserMessage(
-            renderPrompt(
-                gameEngineSystemPrompt,
-                Pair.of("stateJSON", initJsonResource.getContentAsString(StandardCharsets.UTF_8))));
-    history.add(initMessage);
-    val initStepReply =
-        chatModel
-            .call(
-                Prompt.builder()
-                    .messages(history)
-                    .chatOptions(
-                        ToolCallingChatOptions.builder()
-                            .model(gameProperties.getGameEngineModel())
-                            .build())
-                    .build())
-            .getResult()
-            .getOutput()
-            .getText();
-    log.info("Reply to init step: {}", initStepReply);
+    statusChat =
+        new GameChat(
+            chatModel,
+            gameProperties,
+            statusService,
+            ToolCallingChatOptions.builder()
+                .toolCallbacks(ToolCallbacks.from(statusService, this))
+                .model(gameProperties.getGameEngineModel())
+                .build());
+    advisorChat =
+        new GameChat(
+            chatModel,
+            gameProperties,
+            statusService,
+            ToolCallingChatOptions.builder()
+                .toolCallbacks(ToolCallbacks.from(statusService, this))
+                .model(gameProperties.getGameEngineModel())
+                .build());
+    val initStepReply = statusChat.sendMessage(gameEngineSystemPrompt);
     /*    val statusPrompt = new UserMessage(renderPrompt(gameEngineStatusPrompt));
     history.add(statusPrompt);
     val statusStepReply = chatModel.call(Prompt.builder().messages(history)
@@ -128,34 +110,39 @@ public class GameEngineService {
         .build();
   }
 
+  @Tool(description = "Ends the current turn")
+  public void endTurn() {
+    log.info("Ending current turn!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    val output =
+      advisorChat.sendMessage(
+            "The turn is over. Lets update the game state and the status of the nation accordingly. "
+                + "Please use the format of the current game state JSON to update the game state. The current game state is as follows:\n<stateJSON>");
+    log.info("Chat response to JSON update: {}", output);
+  }
+
+  @Tool(description = "gives a short brief of the projects and plans for the current turn to the advisor")
+  public void advisorBrief(String briefing) {
+    log.info("Briefing the advisor about the current turn projects and plans: {}", briefing);
+//    val output = advisorChat.sendMessage(briefing);
+//    log.info("Chat response to briefing: {}", output);
+  }
+
   @PostMapping("/game/chat")
   public GameStatusDataDto chatWithGameEngine(@RequestBody String userMessage) {
     log.info("Received user message: {}", userMessage);
-    val userMsg =
-        new UserMessage(
-            "Reply from the user: '"
+    val response =
+      advisorChat.sendMessage(
+            "Reply from the player: '"
                 + userMessage
                 + "'"
                 + "Please respond in the context of the game world. "
                 + "Update the game-state and the status of the nation accordingly."
-                + " If the turn is over, please indicate this by changing the date in the game state.");
-    history.add(userMsg);
-    val response =
-        chatModel.call(
-            Prompt.builder()
-                .messages(history)
-                .chatOptions(
-                    ToolCallingChatOptions.builder()
-                        .toolCallbacks(ToolCallbacks.from(statusService))
-                        .model(gameProperties.getGameEngineModel())
-                        .build())
-                .build());
-    val output = response.getResult().getOutput();
-    log.info("Chat response: {}", output.getText());
-    history.add(output);
+                + "Engage in a dialog with the player, possibly answering his questions, working on details of the proposals. "
+                + "Only end the turn if the user actively expresses his desire to do so. Do so by calling the 'endTurn' tool. ");
+    log.info("Chat response: {}", response);
     return GameStatusDataDto.builder()
         .stats(GameStatsDto.create(statusService.getGameData()))
-        .chatMessage(output.getText())
+        .chatMessage(response)
         .build();
   }
 

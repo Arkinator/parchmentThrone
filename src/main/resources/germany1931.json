@@ -130,14 +130,14 @@
       },
       {
         "nation_id": "HUN",
-        "type": "major\_power",
+        "type": "major_power",
         "strength": 0.82
       }
     ],
     "rivals": [
       {
         "nation_id": "FRA",
-        "type": "great\_power\_rivalry",
+        "type": "great_power_rivalry",
         "strength": -0.91
       },
       {
