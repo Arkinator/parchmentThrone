@@ -1,8 +1,10 @@
 game:
-  world-genesis:
-    enabled: true
-    start-year: 1931
-    player-nation-name: Deutschland
+  genesis-enabled: false
+  start-year: 1931
+  player-nation-name: Deutschland
+  turn-length: "6 month"
+  current-date: "1.1.1931"
+  gameEngineModel: "llmbg-tooluse-27b-v1.0-i1"
 
 spring:
   application:
@@ -10,15 +12,12 @@ spring:
   ai:
     openai:
       base-url: http://127.0.0.1:1235
-#      api-key: sk-12345 # Platzhalter-API-Schlüssel
+      #      api-key: sk-12345 # Platzhalter-API-Schlüssel
       chat:
         options:
-#          model: llama-3-groq-8b-tool-use
-          model: llmbg-tooluse-27b-v1.0-i1
-#    ollama:
-##      base-url: http://127.0.0.1:1234
-#      base-url: http://192.168.0.90:1234
-#      chat:
-#        model: llama-3.3-70b-instruct
-#        options:
-#          temperature: 0.7
+          #          model: llama-3-groq-8b-tool-use
+          model: "llmbg-tooluse-27b-v1.0-i1"
+    vectorstore:
+      weaviate:
+        host: localhost:9090
+        scheme: http

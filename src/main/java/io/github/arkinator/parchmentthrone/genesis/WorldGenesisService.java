@@ -1,9 +1,12 @@
 package io.github.arkinator.parchmentthrone.genesis;
 
-import io.github.arkinator.parchmentthrone.mcp.McpBasicStatus;
-import io.github.arkinator.parchmentthrone.mcp.McpStatusService;
+import io.github.arkinator.parchmentthrone.game.GameProperties;
+import io.github.arkinator.parchmentthrone.mcp.StatusService;
+import io.github.arkinator.parchmentthrone.mcp.data.GameDataDto;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -15,19 +18,32 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class WorldGenesisService {
 
-  private final WorldGenesisProperties properties;
-
+  @Autowired
+  private GameProperties properties;
   @Value("classpath:/prompts/world-genesis-system-prompt.st")
   private Resource systemPromptResource;
+  @Value("classpath:/prompts/structure-nation.st")
+  private Resource structureNationResource;
+  @Value("${spring.ai.openai.base-url}")
+  private String openAiBaseUrl;
+  @Value("${spring.ai.openai.chat.options.model}")
+  private String model;
 
-  private final McpStatusService mcpStatusService;
-  private final McpBasicStatus mcpBasicStatus;
+  private final StatusService mcpBasicStatus;
 
   @EventListener(ApplicationReadyEvent.class)
   public void onApplicationReady() {
     log.info("ApplicationReadyEvent empfangen. Überprüfe, ob die Weltgenerierung aktiviert ist.");
 
-    if (!properties.isEnabled()) {
+    mcpBasicStatus.updateGameData(GameDataDto.builder()
+      .nation(properties.getPlayerNationName())
+      .currentDate(LocalDate.of(properties.getStartYear(), 1, 1).toString())
+      .politicalPower(100.)
+      .money(100.)
+      .mentalEnergy(100.)
+      .build());
+
+    if (!properties.isGenesisEnabled()) {
       log.info("Weltgenerierung ist in 'application.yaml' deaktiviert. Überspringe den Prozess.");
       return;
     }
@@ -35,7 +51,10 @@ public class WorldGenesisService {
       properties.getStartYear(),
       properties.getPlayerNationName(),
       mcpBasicStatus,
-      systemPromptResource
+      systemPromptResource,
+      structureNationResource,
+      openAiBaseUrl,
+      model
     ).execute();
   }
 }

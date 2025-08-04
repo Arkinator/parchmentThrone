@@ -1,26 +1,24 @@
 package io.github.arkinator.parchmentthrone.genesis;
 
-import io.github.arkinator.parchmentthrone.mcp.McpBasicStatus;
+import io.github.arkinator.parchmentthrone.mcp.StatusService;
+import io.github.arkinator.parchmentthrone.mcp.data.GameDataDto;
 import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Map.Entry;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.NoopApiKey;
-import org.springframework.ai.model.tool.ToolCallingChatOptions;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
-import org.springframework.ai.support.ToolCallbacks;
 import org.stringtemplate.v4.*;
 import org.springframework.core.io.Resource;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
@@ -35,9 +33,13 @@ public class GenesisExecutor {
   private static OpenAiChatModel chatModel;
   int startYear;
   String playerNationName;
-  McpBasicStatus mcpBasicStatus;
+  StatusService mcpBasicStatus;
   Resource systemPromptResource;
+  Resource structureNationResource;
+  String openAiBaseUrl;
+  String model;
 
+  @SneakyThrows
   public void execute() {
     log.info("---- Weltgenerierung beginnt ----");
 
@@ -49,37 +51,14 @@ public class GenesisExecutor {
 
     prepareModelForBasicCreation();
 
-    executeGenerationStep("Lets begin by updating the status for <playerNationName> in the year <startYear>.");
-    List<String> otherNations = extractListFromResponse(
-      "Please provide a list of other important nations in the world besides <playerNationName> in the year <startYear>."
-      + "This includes major powers, regional leaders, and any nations that have a significant impact on global politics. "
-      + "Include all neighboring nations and those with historical ties to <playerNationName>."
-      + "Ensure that the status reflects their current situation in the year <startYear>. Update the status individually for each nation, "
-      + "as many times as necessary, until all relevant nations are covered. This should be anything from 10 to 20 nations."
-      + "The list should be in the format: [\"Nation1\", \"Nation2\", \"Nation3\"]."
-      + " Please provide the list in a single response, formatted as JSON.");
-    otherNations.forEach(n -> executeGenerationStep("Now update the status for the nation <otherNationName>. "
-                                                    + "Please ensure that the status reflects their current situation in the year <startYear>.",
-      Pair.of("otherNationName", n)));
+    final String nationStructure = renderPrompt(structureNationResource.getContentAsString(StandardCharsets.UTF_8));
+    executeGenerationStep(nationStructure);
 
     log.info("---- Weltgenerierung erfolgreich abgeschlossen ----");
   }
 
-  private List<String> extractListFromResponse(String s) {
-    log.info("Sende Prompt an den World Genesis Agenten, um eine Liste zu erhalten...");
-
-    val response = chatModel.call(s);
-
-    // Assuming the response is a JSON array of strings
-    log.info("Antwort des World Genesis Agenten erhalten: {}", response);
-    final List<String> result = List.of(response.replaceAll("[\\[\\]\"]", "").split(","));
-    log.info("Extrahierte Liste: {}", result);
-    return result;
-  }
-
   @SneakyThrows
   private void prepareModelForBasicCreation() {
-
     final String systemPrompt = renderPrompt(systemPromptResource.getContentAsString(StandardCharsets.UTF_8));
     log.debug("System-Prompt vorbereitet: {}", systemPrompt);
     chatModel.call(Prompt.builder()
@@ -87,9 +66,9 @@ public class GenesisExecutor {
       .build());
   }
 
-  private static void generateChatModel() {
+  private void generateChatModel() {
     OpenAiApi openAiApi = OpenAiApi.builder()
-      .baseUrl("http://127.0.0.1:1235")
+      .baseUrl(openAiBaseUrl)
       .apiKey(new NoopApiKey())
       .webClientBuilder(WebClient.builder()
         .clientConnector(new JdkClientHttpConnector(HttpClient.newBuilder()
@@ -103,8 +82,7 @@ public class GenesisExecutor {
           .build())))
       .build();
     var openAiChatOptions = OpenAiChatOptions.builder()
-      .model("llmbg-tooluse-27b-v1.0-i1")
-//      .model("llama-3-groq-8b-tool-use")
+      .model(model)
       .temperature(0.4)
       .build();
     chatModel = OpenAiChatModel.builder()
@@ -117,10 +95,8 @@ public class GenesisExecutor {
 
     log.info("Warte auf die Antwort des World Genesis Agenten...");
     val response = chatModel.call(Prompt.builder()
-      .chatOptions(ToolCallingChatOptions.builder()
-        .toolCallbacks(ToolCallbacks.from(mcpBasicStatus)).build())
       .messages(new UserMessage(renderPrompt(prompt, additionalParams))).build());
-    log.info("Antwort des World Genesis Agenten erhalten: {}", response);
+    log.info("Antwort des World Genesis Agenten erhalten: \n\n{}\n\n", response);
     if (response == null) {
       log.error("Keine Antwort vom World Genesis Agenten erhalten. Bitte überprüfe die Konfiguration.");
     }

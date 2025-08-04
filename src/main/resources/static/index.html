@@ -58,10 +58,9 @@
           height: auto;
           padding: 0.75rem;
       }
-      /* Mobile-spezifische Stile für die Panels */
       @media screen and (max-width: 768px) {
           #status-panel, #chat-panel {
-              display: none; /* Panels auf Mobile standardmäßig verstecken */
+              display: none;
           }
           .active-panel {
               display: block !important;
@@ -72,7 +71,7 @@
       }
       @media screen and (min-width: 769px) {
           #status-panel, #chat-panel {
-              display: block; /* Panels auf Desktop immer anzeigen */
+              display: block;
           }
       }
   </style>
@@ -96,15 +95,15 @@
           <div class="is-hidden-mobile">
             <div class="card stat-card mb-4">
               <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-coins"></i></span> Staatskasse</p></header>
-              <div class="card-content"><p id="stat-money-desktop" class="title is-3 has-text-success">12.500</p></div>
+              <div class="card-content"><p id="stat-money-desktop" class="title is-3 has-text-success">...</p></div>
             </div>
             <div class="card stat-card mb-4">
               <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-crown"></i></span> Politische Macht</p></header>
-              <div class="card-content"><p id="stat-political-power-desktop" class="title is-3 has-text-primary">85</p></div>
+              <div class="card-content"><p id="stat-political-power-desktop" class="title is-3 has-text-primary">...</p></div>
             </div>
             <div class="card stat-card">
               <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-brain"></i></span> Mentale Energie</p></header>
-              <div class="card-content"><p id="stat-mental-energy-desktop" class="title is-3 has-text-info">92%</p></div>
+              <div class="card-content"><p id="stat-mental-energy-desktop" class="title is-3 has-text-info">...</p></div>
             </div>
           </div>
         </aside>
@@ -113,21 +112,20 @@
       <div class="column is-two-thirds">
         <div id="status-panel" class="box has-background-white p-5 active-panel">
           <h2 class="title is-4">Rundenbericht</h2>
-          <div id="round-summary" class="content mb-5">Warte auf die erste Runde...</div>
-
+          <div id="round-summary" class="content mb-5">Lade Rundenbericht...</div>
           <div class="is-hidden-tablet">
             <p class="menu-label mt-5">Statistiken</p>
             <div class="card stat-card mb-4">
               <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-coins"></i></span> Staatskasse</p></header>
-              <div class="card-content"><p id="stat-money-mobile" class="title is-3 has-text-success">12.500</p></div>
+              <div class="card-content"><p id="stat-money-mobile" class="title is-3 has-text-success">...</p></div>
             </div>
             <div class="card stat-card mb-4">
               <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-crown"></i></span> Politische Macht</p></header>
-              <div class="card-content"><p id="stat-political-power-mobile" class="title is-3 has-text-primary">85</p></div>
+              <div class="card-content"><p id="stat-political-power-mobile" class="title is-3 has-text-primary">...</p></div>
             </div>
             <div class="card stat-card">
               <header class="card-header"><p class="card-header-title is-size-5"><span class="icon is-small mr-2"><i class="fas fa-brain"></i></span> Mentale Energie</p></header>
-              <div class="card-content"><p id="stat-mental-energy-mobile" class="title is-3 has-text-info">92%</p></div>
+              <div class="card-content"><p id="stat-mental-energy-mobile" class="title is-3 has-text-info">...</p></div>
             </div>
           </div>
         </div>
@@ -151,29 +149,8 @@
   </div>
 </section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-
 <script>
-  const websocketUrl = 'http://localhost:8080/ws-endpoint';
-  let stompClient = null;
-
-  function connect() {
-    const socket = new SockJS(websocketUrl);
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-      console.log('Connected: ' + frame);
-      stompClient.subscribe('/topic/game-round-updates', function (message) {
-        const roundData = JSON.parse(message.body);
-        displayRoundUpdate(roundData);
-        updateStats(roundData.stats);
-      });
-      stompClient.subscribe('/topic/chat-messages', function (message) {
-        displayChatMessage(JSON.parse(message.body));
-      });
-    });
-  }
-
+  // Funktion zum Umschalten der Panels
   function showPanel(panelName) {
     const panels = document.querySelectorAll('.box');
     panels.forEach(panel => {
@@ -181,32 +158,12 @@
     });
     document.getElementById(`${panelName}-panel`).classList.add('active-panel');
 
-    // Update der aktiven Menü-Links
     const menuLinks = document.querySelectorAll('.menu-list a');
     menuLinks.forEach(link => link.classList.remove('is-active'));
     document.getElementById(`menu-${panelName}`).classList.add('is-active');
   }
 
-  function displayRoundUpdate(roundData) {
-    const roundSummaryDiv = document.getElementById('round-summary');
-    if (roundSummaryDiv) {
-      roundSummaryDiv.innerHTML = `<p><strong>Runde ${roundData.roundNumber} abgeschlossen</strong></p><p>${roundData.summary}</p>`;
-    }
-  }
-
-  function updateStats(stats) {
-    if (stats) {
-      // Update der Desktop-Stats
-      document.getElementById('stat-money-desktop').textContent = stats.money;
-      document.getElementById('stat-political-power-desktop').textContent = stats.politicalPower;
-      document.getElementById('stat-mental-energy-desktop').textContent = `${stats.mentalEnergy}%`;
-      // Update der Mobile-Stats
-      document.getElementById('stat-money-mobile').textContent = stats.money;
-      document.getElementById('stat-political-power-mobile').textContent = stats.politicalPower;
-      document.getElementById('stat-mental-energy-mobile').textContent = `${stats.mentalEnergy}%`;
-    }
-  }
-
+  // Funktion zum Anzeigen einer Chat-Nachricht
   function displayChatMessage(chatMessage) {
     const chatWindow = document.getElementById('chat-window');
     const messageElement = document.createElement('article');
@@ -220,16 +177,77 @@
     chatWindow.scrollTop = chatWindow.scrollHeight;
   }
 
-  function sendChatMessage() {
+  // Funktion zum Senden einer Chat-Nachricht und Empfangen der Antwort
+  async function sendChatMessage() {
     const chatInput = document.getElementById('chat-input');
     const messageContent = chatInput.value.trim();
-    if (messageContent && stompClient) {
-      stompClient.send("/app/chat", {}, JSON.stringify({ sender: "Spieler", content: messageContent }));
-      chatInput.value = '';
+
+    if (messageContent) {
+      // Zeige die Nachricht des Spielers sofort an
       displayChatMessage({ sender: "Spieler", content: messageContent });
+      chatInput.value = '';
+
+      try {
+        // Sende die Nachricht an den Server
+        const response = await fetch('/game/chat', {
+          method: 'POST',
+          body: messageContent
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Erhalte die Antwort vom Server und zeige sie an
+        const aiResponse = await response.json();
+        if (aiResponse && aiResponse.chatMessage) {
+          displayChatMessage({ sender: "KI", content: aiResponse.chatMessage });
+          // Optional: Statistiken aktualisieren, wenn der Server sie zurückgibt
+          if (aiResponse.stats) {
+            updateStats(aiResponse.stats);
+          }
+        }
+
+      } catch (error) {
+        console.error('Fehler beim Senden der Chat-Nachricht:', error);
+        displayChatMessage({ sender: "KI", content: "Es gab einen Fehler bei der Kommunikation mit dem Server." });
+      }
     }
   }
 
+  // Funktion zum Laden des initialen Status
+  async function fetchInitialStatus() {
+    try {
+      const response = await fetch('/game/start-status-report');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      // Füge den erhaltenen HTML-Code in das Rundenbericht-Element ein
+      document.getElementById('round-summary').innerHTML = data.summaryHtml;
+      // Aktualisiere die Statistiken
+      updateStats(data.stats);
+
+    } catch (error) {
+      console.error('Fehler beim Laden des initialen Statusberichts:', error);
+      document.getElementById('round-summary').innerHTML = '<p>Fehler beim Laden des Spielstatus.</p>';
+    }
+  }
+
+  // Funktion zum Aktualisieren der Statistik-Werte
+  function updateStats(stats) {
+    if (stats) {
+      document.getElementById('stat-money-desktop').textContent = stats.money;
+      document.getElementById('stat-political-power-desktop').textContent = stats.politicalPower;
+      document.getElementById('stat-mental-energy-desktop').textContent = `${stats.mentalEnergy}%`;
+      document.getElementById('stat-money-mobile').textContent = stats.money;
+      document.getElementById('stat-political-power-mobile').textContent = stats.politicalPower;
+      document.getElementById('stat-mental-energy-mobile').textContent = `${stats.mentalEnergy}%`;
+    }
+  }
+
+  // Event-Listener für das Senden via Enter-Taste
   document.getElementById('chat-input').addEventListener('keydown', function(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
@@ -237,9 +255,9 @@
     }
   });
 
+  // Startet die App beim Laden der Seite
   window.onload = function() {
-    connect();
-    // Auf Mobilgeräten standardmäßig den Chat-Panel anzeigen, wenn der Bildschirm schmal ist.
+    fetchInitialStatus();
     if (window.innerWidth <= 768) {
       showPanel('chat');
     } else {

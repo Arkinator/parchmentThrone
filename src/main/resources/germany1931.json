@@ -1,0 +1,172 @@
+{
+  "nation_id": "DEU",
+  "name": "Deutschland",
+  "general_info": {
+    "capital": "Berlin",
+    "government_type": "Weimar Republic",
+    "head_of_state": "Paul von Hindenburg",
+    "head_of_government": "Heinrich Brüning",
+    "culture": "German",
+    "religion": "Protestant (historically Lutheran)"
+  },
+  "political_system": {
+    "system_type": "Parliamentary democracy with a President as head of state and Chancellor as head of government",
+    "legislative_body": "Reichstag",
+    "election_cycle": {
+      "presidential": {
+        "next_election_date": "1932.05.13",
+        "system": "Indirect election by the National Assembly",
+        "term_length_years": 7
+      },
+      "legislative": {
+        "next_election_date": "1932.07.31",
+        "system": "Proportional representation with party lists",
+        "term_length_years": 4
+      }
+    },
+    "political_parties": [
+      {
+        "id": "spd",
+        "name": "Sozialdemokratische Partei Deutschlands (SPD)",
+        "leader": "Otto Wels",
+        "ideology": ["social democracy"],
+        "governing_role": "Main opposition party",
+        "national_assembly_seats": 107,
+        "popularity_score": 0.25
+      },
+      {
+        "id": "kpd",
+        "name": "Kommunistische Partei Deutschlands (KPD)",
+        "leader": "Ernst Thälmann",
+        "ideology": ["communism"],
+        "governing_role": "Opposition party",
+        "national_assembly_seats": 77,
+        "popularity_score": 0.18
+      },
+      {
+        "id": "z",
+        "name": "Zentrumspartei (Centre Party)",
+        "leader": "Ludwig Kaas",
+        "ideology": ["Christian democracy"],
+        "governing_role": "Coalition partner",
+        "national_assembly_seats": 68,
+        "popularity_score": 0.21
+      },
+      {
+        "id": "dnvp",
+        "name": "Deutschnationale Volkspartei (DNVP)",
+        "leader": "Alfred Hugenberg",
+        "ideology": ["national conservatism"],
+        "governing_role": "Coalition partner",
+        "national_assembly_seats": 41,
+        "popularity_score": 0.28
+      },
+      {
+        "id": "nsdap",
+        "name": "Nationalsozialistische Deutsche Arbeiterpartei (NSDAP)",
+        "leader": "Adolf Hitler",
+        "ideology": ["fascism"],
+        "governing_role": "Opposition party",
+        "national_assembly_seats": 107,
+        "popularity_score": 0.32
+      }
+    ],
+    "governing_coalition": {
+      "name": "Brüning government coalition",
+      "members": ["spd", "z"],
+      "head": "Heinrich Brüning",
+      "mandate_strength_score": 0.48
+    }
+  },
+  "domestic_factions": [
+    {
+      "name": "Industrialists and Big Business",
+      "influence_score": 0.75,
+      "ideology_tags": ["capitalism"],
+      "relationship_to_government_strength": -0.12
+    },
+    {
+      "name": "Trade Unions and Labor Movement",
+      "influence_score": 0.68,
+      "ideology_tags": ["socialism"],
+      "relationship_to_government_strength": 0.35
+    },
+    {
+      "name": "Catholic Church",
+      "influence_score": 0.72,
+      "ideology_tags": ["conservatism"],
+      "relationship_to_government_strength": -0.18
+    }
+  ],
+  "economy": {
+    "gdp_usd": 95400000000,
+    "gdp_growth_rate": 2.3,
+    "inflation_rate": 6.7,
+    "unemployment_rate": 18.8,
+    "public_debt_as_gdp_percent": 45.9,
+    "major_industries": ["heavy industry", "agriculture", "chemicals"],
+    "economic_stability_score": 0.37
+  },
+  "military": {
+    "active_personnel": 120000,
+    "reserve_personnel": 500000,
+    "defense_budget_usd": 690000000,
+    "budget_as_gdp_percent": 7.3,
+    "military_power_score": 0.48,
+    "branches": ["Army", "Navy"],
+    "foreign_deployments": [
+      {
+        "country": "China",
+        "mission": "Protection of German business interests and nationals during the Chinese Civil War."
+      }
+    ]
+  },
+  "diplomacy": {
+    "alliances": [
+      {
+        "nation_id": "ITA",
+        "type": "strategic",
+        "strength": 0.65
+      },
+      {
+        "nation_id": "HUN",
+        "type": "major\_power",
+        "strength": 0.82
+      }
+    ],
+    "rivals": [
+      {
+        "nation_id": "FRA",
+        "type": "great\_power\_rivalry",
+        "strength": -0.91
+      },
+      {
+        "nation_id": "POL",
+        "type": "border dispute rivalry",
+        "strength": -0.75
+      }
+    ],
+    "affiliations": [
+      {
+        "organization_id": "League of Nations",
+        "status": "Member state",
+        "influence_score": 0.43
+      },
+      {
+        "organization_id": "World Economic Conference (1927)",
+        "status": "Attendee and signatory to the Young Plan",
+        "influence_score": 0.58
+      }
+    ]
+  },
+  "key_actions": [
+    {
+      "action_id": "YoungPlanAgreement",
+      "description": "Germany agrees to the terms of the Young Plan, restructuring war reparations payments.",
+      "date": "1930.06.25",
+      "type": "Economic policy change",
+      "impact_score": 0.78,
+      "tags": ["economics", "international relations"]
+    }
+  ]
+}
