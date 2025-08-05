@@ -228,6 +228,9 @@
       document.getElementById('round-summary').innerHTML = data.summaryHtml;
       // Aktualisiere die Statistiken
       updateStats(data.stats);
+      if (data && data.chatMessage) {
+        displayChatMessage({sender: "KI", content: data.chatMessage});
+      }
 
     } catch (error) {
       console.error('Fehler beim Laden des initialen Statusberichts:', error);

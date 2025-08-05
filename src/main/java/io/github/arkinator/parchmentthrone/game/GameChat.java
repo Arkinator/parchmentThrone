@@ -1,20 +1,25 @@
 package io.github.arkinator.parchmentthrone.game;
 
+import io.github.arkinator.parchmentthrone.game.dto.GameStatsDto;
 import io.github.arkinator.parchmentthrone.mcp.StatusService;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.tool.ToolCallingChatOptions;
 import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.core.io.Resource;
 import org.stringtemplate.v4.ST;
 
 @Value
@@ -22,11 +27,14 @@ import org.stringtemplate.v4.ST;
 @Slf4j
 public class GameChat {
 
-  OpenAiChatModel chatModel;
+  ChatModel chatModel;
   List<Message> history = new ArrayList<>();
   GameProperties gameProperties;
   StatusService statusService;
   ToolCallingChatOptions chatOptions;
+  Resource initialPrompt;
+  @Getter
+  Map<String, String> placeholders;
 
   private String renderPrompt(String rawPrompt, Map.Entry<String, String>... additionalEntries) {
     final ST st = new ST(rawPrompt);
@@ -56,6 +64,27 @@ public class GameChat {
             .call(Prompt.builder().messages(history).chatOptions(chatOptions).build())
             .getResult()
             .getOutput();
+    log.info("Reply to message: {}", reply.getText());
+    history.add(reply);
+    return reply.getText();
+  }
+
+  @SneakyThrows
+  public String initialize() {
+    history.clear();
+    String promptTemplate = new String(initialPrompt.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+
+    String resolvedPrompt = promptTemplate;
+    for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+      resolvedPrompt = resolvedPrompt.replace("{" + entry.getKey() + "}", entry.getValue());
+    }
+
+    history.add(new UserMessage(resolvedPrompt));
+    val reply =
+      chatModel
+        .call(Prompt.builder().messages(history).chatOptions(chatOptions).build())
+        .getResult()
+        .getOutput();
     log.info("Reply to init step: {}", reply.getText());
     history.add(reply);
     return reply.getText();

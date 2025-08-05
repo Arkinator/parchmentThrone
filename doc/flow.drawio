@@ -1,0 +1,128 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.0.4 Chrome/138.0.7204.97 Electron/37.2.1 Safari/537.36" version="28.0.4">
+  <diagram name="Page-1" id="-cDUw6mfpqmsIxuSoo4R">
+    <mxGraphModel dx="1776" dy="705" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-1" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="bli6fYcsZ2GsL2ERk_pY-22" target="bli6fYcsZ2GsL2ERk_pY-8">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="90" y="410" as="sourcePoint" />
+            <mxPoint x="180" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-4" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="bli6fYcsZ2GsL2ERk_pY-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="280" y="390" as="sourcePoint" />
+            <mxPoint x="374" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-6" value="Briefing - YAML" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="290" y="350" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-8" value="EventBot&lt;div&gt;(generate Events, extract Briefing)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="350" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-9" value="BriefingBot" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="370" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-11" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="bli6fYcsZ2GsL2ERk_pY-12">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="480" y="390" as="sourcePoint" />
+            <mxPoint x="640" y="330" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-12" value="HTML Briefing" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="590" y="375" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-13" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.009;entryY=0.381;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="bli6fYcsZ2GsL2ERk_pY-14">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="390" as="sourcePoint" />
+            <mxPoint x="380" y="480" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="320" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-14" value="AdvisorBot" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="460" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-15" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="bli6fYcsZ2GsL2ERk_pY-14" target="bli6fYcsZ2GsL2ERk_pY-14">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="450" as="sourcePoint" />
+            <mxPoint x="340" y="530" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="520" y="498" />
+              <mxPoint x="520" y="540" />
+              <mxPoint x="340" y="540" />
+              <mxPoint x="340" y="498" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-16" value="Conversation with the player" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="380" y="550" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-17" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.987;exitY=0.403;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="bli6fYcsZ2GsL2ERk_pY-14" target="bli6fYcsZ2GsL2ERk_pY-19">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="450" as="sourcePoint" />
+            <mxPoint x="630" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-19" value="GameEngineBot&lt;div&gt;(decide on outcome of plans)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="610" y="450" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-20" value="End Turn:&lt;div&gt;Decision YAML&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="500" y="440" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-22" value="" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-15" y="370" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-2" value="Status.json" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry y="375" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-23" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="bli6fYcsZ2GsL2ERk_pY-19" target="bli6fYcsZ2GsL2ERk_pY-22">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="630" y="580" as="sourcePoint" />
+            <mxPoint x="680" y="530" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="800" y="480" />
+              <mxPoint x="800" y="600" />
+              <mxPoint x="-80" y="600" />
+              <mxPoint x="-80" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-24" value="People Generator Bot" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="220" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-25" value="VectorDB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="450" y="205" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-26" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="bli6fYcsZ2GsL2ERk_pY-24" target="bli6fYcsZ2GsL2ERk_pY-25">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="260" as="sourcePoint" />
+            <mxPoint x="450" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-28" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;dashed=1;dashPattern=8 8;" edge="1" parent="1" source="bli6fYcsZ2GsL2ERk_pY-8" target="bli6fYcsZ2GsL2ERk_pY-24">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="360" y="450" as="sourcePoint" />
+            <mxPoint x="410" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-30" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;dashPattern=8 8;" edge="1" parent="1" source="bli6fYcsZ2GsL2ERk_pY-14" target="bli6fYcsZ2GsL2ERk_pY-24">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="270" y="380" as="sourcePoint" />
+            <mxPoint x="365" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bli6fYcsZ2GsL2ERk_pY-31" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.843;entryY=1.05;entryDx=0;entryDy=0;dashed=1;dashPattern=8 8;entryPerimeter=0;" edge="1" parent="1" source="bli6fYcsZ2GsL2ERk_pY-19" target="bli6fYcsZ2GsL2ERk_pY-24">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="455" y="500" as="sourcePoint" />
+            <mxPoint x="340" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

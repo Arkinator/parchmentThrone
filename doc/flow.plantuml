@@ -1,0 +1,34 @@
+@startuml
+title Game Engine and Agent Interaction Flow
+
+start
+:Zugstart;
+
+:Game Engine Agent initialisiert (stateless);
+:Status & Analyse (get_basic_status, Detail-Queries);
+
+if (Ereignisgenerierung geplant?) then (ja)
+  :Ereignisgenerierung (reaktiv/proaktiv);
+endif
+
+if (Agenteninteraktion geplant?) then (ja)
+  :Subchats mit Conversational Agents;
+  :YAML Output (energy_consumed, reason);
+endif
+
+if (Aktionsauswertung geplant?) then (ja)
+  :update_mcp_db, add_to_memory;
+endif
+
+if (Statusbericht an Spieler geplant?) then (ja)
+  :Statusbericht an Spieler;
+endif
+
+stop
+
+' Agents
+legend right
+  Game Engine Agent: Führt Spielzug aus
+  Conversational Agents: Berater, Diplomaten, Generäle
+endlegend
+@enduml

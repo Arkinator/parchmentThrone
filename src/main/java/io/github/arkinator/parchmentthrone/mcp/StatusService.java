@@ -23,8 +23,8 @@ public class StatusService {
   @Tool(description = "Provides a compact overview of the current state of the nation.")
   public String getNationStatus(@ToolParam(description = "Name of the nation") String nationName) {
     return vectorStore.similaritySearch("Get status for nation " + nationName).stream().findFirst().map(result -> {
-      log.info("Found status for nation {}: \n{}", nationName, result.getFormattedContent());
-      return result.getFormattedContent();
+      log.info("Found status for nation {} (score {}): \n{}", nationName, result.getScore(), result.getText());
+      return result.getText();
     }).orElse("No status found for nation " + nationName);
 //    log.info("Returning basic status for nation {}: \n{}", nationName, basicStatus);
 //    return basicStatus;
