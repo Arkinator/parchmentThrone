@@ -1,23 +1,31 @@
 game:
+  mockingForRounds: 1
+  mocks:
+    html: true
+    briefing: true
   genesis-enabled: false
   start-year: 1931
   player-nation-name: Deutschland
-  turn-length: "6 month"
+  turn-length: "3 month"
   current-date: "1.1.1931"
+  playerCharacterName: Heinrich Brüning
+  playerCharacterTitle: Chancellor of Germany
 #  gameEngineModel: "llmbg-tooluse-27b-v1.0-i1"
-  gameEngineModel: "qwen/qwen3-30b-a3b-2507"
+#  gameEngineModel: "qwen/qwen3-30b-a3b-2507"
+#  gameEngineModel: "mixtral_13b_chat-mlx"
 
 spring:
   application:
     name: TheParchmentThrone
   ai:
     openai:
-      base-url: http://127.0.0.1:1235
-      #      api-key: sk-12345 # Platzhalter-API-Schlüssel
+      base-url: https://openrouter.ai/api
+      api-key: blubsblabs # Platzhalter-API-Schlüssel
       chat:
         options:
           #          model: llama-3-groq-8b-tool-use
-          model: "llmbg-tooluse-27b-v1.0-i1"
+          #model: "llmbg-tooluse-27b-v1.0-i1"
+          model: "openai/gpt-oss-20b:free"
     vectorstore:
       weaviate:
         host: localhost:9090

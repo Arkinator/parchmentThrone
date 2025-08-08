@@ -4,6 +4,7 @@ import io.github.arkinator.parchmentthrone.game.GameProperties;
 import java.net.http.HttpClient;
 import java.time.Duration;
 import lombok.Data;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.model.NoopApiKey;
@@ -42,12 +43,12 @@ public class ParchmentThroneApplication {
   }
 
   @Bean
-  public ChatModel chatModel(@Autowired GameProperties gameProperties) {
-    OpenAiApi openAiApi =
+  public ChatClient chatClient(@Autowired GameProperties gameProperties, @Autowired ChatClient.Builder builder) {
+/*    OpenAiApi openAiApi =
         OpenAiApi.builder()
             .baseUrl(openAiBaseUrl)
-            .apiKey(new NoopApiKey())
-            .webClientBuilder(
+            .apiKey("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")
+           /* .webClientBuilder(
                 WebClient.builder()
                     .clientConnector(
                         new JdkClientHttpConnector(
@@ -62,13 +63,14 @@ public class ParchmentThroneApplication {
                             HttpClient.newBuilder()
                                 .version(HttpClient.Version.HTTP_1_1)
                                 .connectTimeout(Duration.ofSeconds(30))
-                                .build())))
+                                .build())))*
             .build();
     var openAiChatOptions =
         OpenAiChatOptions.builder()
             .model(gameProperties.getGameEngineModel())
             .temperature(0.4)
             .build();
-    return OpenAiChatModel.builder().defaultOptions(openAiChatOptions).openAiApi(openAiApi).build();
+    return OpenAiChatModel.builder().defaultOptions(openAiChatOptions).openAiApi(openAiApi).build();*/
+    return builder.build();
   }
 }

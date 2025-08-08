@@ -27,14 +27,13 @@ import org.stringtemplate.v4.ST;
 @Slf4j
 public class GameChat {
 
-  ChatModel chatModel;
+  ChatClient chatClient;
   List<Message> history = new ArrayList<>();
   GameProperties gameProperties;
   StatusService statusService;
   ToolCallingChatOptions chatOptions;
   Resource initialPrompt;
-  @Getter
-  Map<String, String> placeholders;
+  @Getter Map<String, String> placeholders;
 
   private String renderPrompt(String rawPrompt, Map.Entry<String, String>... additionalEntries) {
     final ST st = new ST(rawPrompt);
@@ -49,7 +48,7 @@ public class GameChat {
                 throw new RuntimeException("Failed to access field: " + field.getName(), e);
               }
             });
-    st.add("stateJSON", statusService.getNationStatus("germany"));
+//    st.add("stateJSON", statusService.getNationStatus("germany"));
     // add additional entries to the template
     Stream.of(additionalEntries).forEach(entry -> st.add(entry.getKey(), entry.getValue()));
 
@@ -60,8 +59,10 @@ public class GameChat {
     final String prompt = renderPrompt(message, additionalEntries);
     history.add(new UserMessage(prompt));
     val reply =
-        chatModel
-            .call(Prompt.builder().messages(history).chatOptions(chatOptions).build())
+        chatClient
+            .prompt(Prompt.builder().messages(history).chatOptions(chatOptions).build())
+            .call()
+            .chatResponse()
             .getResult()
             .getOutput();
     log.info("Reply to message: {}", reply.getText());
@@ -72,7 +73,8 @@ public class GameChat {
   @SneakyThrows
   public String initialize() {
     history.clear();
-    String promptTemplate = new String(initialPrompt.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+    String promptTemplate =
+        new String(initialPrompt.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
     String resolvedPrompt = promptTemplate;
     for (Map.Entry<String, String> entry : placeholders.entrySet()) {
@@ -81,10 +83,12 @@ public class GameChat {
 
     history.add(new UserMessage(resolvedPrompt));
     val reply =
-      chatModel
-        .call(Prompt.builder().messages(history).chatOptions(chatOptions).build())
-        .getResult()
-        .getOutput();
+        chatClient
+            .prompt(Prompt.builder().messages(history).chatOptions(chatOptions).build())
+            .call()
+            .chatResponse()
+            .getResult()
+            .getOutput();
     log.info("Reply to init step: {}", reply.getText());
     history.add(reply);
     return reply.getText();
