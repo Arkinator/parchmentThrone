@@ -11,10 +11,10 @@ The game is taking place in the country of {playerNationName}, with the date bei
 
 This is the JSON structure that represents the state of the country at the beginning of this turn:
 
-{stateJSON}
+{stateJson}
 
 This is the YAML structure that represents the decisions made by the player during this turn:
 
-{decisionsYAML}
+{decisionsYaml}
 
 Now simulate the turn and provide the updated JSON state of the country after the decisions have been processed. The output should only be a single JSON object, without any additional text or explanations. Do not include any comments or formatting that is not JSON. The output should be valid JSON that can be parsed by a computer program.

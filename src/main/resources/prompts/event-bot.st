@@ -57,4 +57,4 @@ briefing:
 
 The current date is {currentDate}, the country is {playerNationName}, and the state of the country is as follows:
 
-{stateJSON}
+{stateJson}

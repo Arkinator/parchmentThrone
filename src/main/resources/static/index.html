@@ -3,6 +3,7 @@
 <head>
   <title>The Parchment Throne</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
@@ -96,9 +97,14 @@
 
 <section class="section">
   <div class="container is-max-widescreen">
-    <h1 class="title is-1 has-text-centered">The Parchment Throne</h1>
-    <p class="subtitle is-6 has-text-centered mb-5">Ein textbasiertes Grand Strategy Spiel</p>
-
+    <div class="has-text-centered">
+      <img src="logo.jpg" alt="The Parchment Throne Logo"
+           style="height: 80px; margin-right: 1rem; vertical-align: middle;">
+      <div style="display: inline-block; vertical-align: middle;">
+        <h1 class="title is-1">The Parchment Throne</h1>
+        <p class="subtitle is-6 mb-5">A text-based politics game</p>
+      </div>
+    </div>
     <div class="columns is-desktop">
       <div class="column is-one-third">
         <aside class="menu">
@@ -157,18 +163,58 @@
         </div>
 
         <div id="chat-panel" class="box has-background-white p-5">
-          <h2 class="title is-4">Befehlszentrale & Sub-Chats</h2>
-          <div id="chat-window" class="chat-window"></div>
-          <div class="field mt-4 chat-input-container">
-            <div class="control" style="width: 100%;">
-              <textarea id="chat-input" class="textarea" rows="2"
-                        placeholder="Gib hier deinen Befehl ein. Mit Shift+Enter eine neue Zeile, mit Enter senden."
-                        style="width: 100%;"></textarea>
-              <button class="button is-info is-medium" onclick="sendChatMessage()" style="margin-right: 0;">
-        <span class="icon">
-            <i class="fas fa-paper-plane"></i>
-        </span>
-              </button>
+          <h2 class="title is-4">Command Center & Sub-Chats</h2>
+          <div class="columns">
+            <div class="column is-one-quarter">
+              <aside class="menu">
+                <p class="menu-label">Characters</p>
+                <ul id="chat-contacts" class="menu-list">
+                  <!-- Example contacts, replace with dynamic rendering as needed -->
+                  <li>
+                    <a class="chat-contact is-active" onclick="switchChat('char1')">
+                      <figure class="image is-32x32 is-inline-block mr-2">
+                        <i class="fas fa-user-tie is-rounded"></i>
+                      </figure>
+                      Character 1
+                      <span class="tag is-danger is-rounded ml-2" style="display:none;" id="chat-notify-char1"></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="chat-contact" onclick="switchChat('char2')">
+                      <figure class="image is-32x32 is-inline-block mr-2">
+                        <i class="fas fa-secret is-rounded"></i>
+                      </figure>
+                      Character 2
+                      <span class="tag is-danger is-rounded ml-2" style="display:none;" id="chat-notify-char2"></span>
+                    </a>
+                  </li>
+                </ul>
+              </aside>
+            </div>
+            <div class="column is-three-quarters">
+              <div class="level mb-3">
+                <div class="level-left">
+                  <figure class="image is-48x48 mr-3">
+                    <i class="fas fa-user-astronaut is-rounded"></i>
+                  </figure>
+                  <div>
+                    <span id="active-chat-name" class="title is-5">Character 1</span>
+                  </div>
+                </div>
+              </div>
+              <div id="chat-window" class="chat-window"></div>
+              <div class="field mt-4 chat-input-container">
+                <div class="control" style="width: 100%;">
+          <textarea id="chat-input" class="textarea" rows="2"
+                    placeholder="Type your command here. Shift+Enter for a new line, Enter to send."
+                    style="width: 100%;"></textarea>
+                  <button class="button is-info is-medium" onclick="sendChatMessage()" style="margin-right: 0;">
+            <span class="icon">
+              <i class="fas fa-paper-plane"></i>
+            </span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -257,25 +303,26 @@
     }
   }
 
-  // Funktion zum Laden des initialen Status
-  async function fetchInitialStatus() {
-    try {
-      // Show loading spinner in round-summary while waiting for the status report
-      document.getElementById('round-summary').innerHTML = `
+  function showWaitingForBriefing() {
+    document.getElementById('round-summary').innerHTML = `
         <span class="icon is-large has-text-info is-loading" style="font-size:2.5rem;">
           <i class="fas fa-spinner fa-spin"></i>
         </span>
-        <p>Generiere Rundenbericht...</p>
+        <p>Generating briefing...</p>
       `;
-      const response = await fetch('/game/start-status-report');
+  }
+
+  // Funktion zum Laden des initialen Status
+  async function fetchInitialStatus() {
+    try {
+      showWaitingForBriefing();
+      const response = await fetch('/game/fetch-status-report');
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
 
-      // Füge den erhaltenen HTML-Code in das Rundenbericht-Element ein
       document.getElementById('round-summary').innerHTML = data.summaryHtml;
-      // Aktualisiere die Statistiken
       updateStats(data.stats);
       if (data && data.chatMessage) {
         displayChatMessage({sender: "KI", content: data.chatMessage});
@@ -317,8 +364,8 @@
     }
   };
 
-  // End Turn Panel Logic
   async function endTurn() {
+    showWaitingForBriefing();
     const waiting = document.getElementById('end-turn-waiting');
     waiting.style.display = 'block';
     try {
@@ -343,6 +390,112 @@
     }
   }
 </script>
+<script>
+  // --- Chat switching logic ---
+  const chats = {
+    char1: {
+      name: "Advisor",
+      portrait: "fa-user-tie",
+      messages: []
+    },
+    char2: {
+      name: "Opposition Leader",
+      portrait: "fa-user-secret",
+      messages: []
+    }
+    // Add more characters as needed
+  };
+  let activeChatId = "char1";
 
+  function switchChat(chatId) {
+    activeChatId = chatId;
+    // Update active contact UI
+    document.querySelectorAll('.chat-contact').forEach(el => el.classList.remove('is-active'));
+    document.querySelector(`[onclick="switchChat('${chatId}')"]`).classList.add('is-active');
+    // Update portrait and name
+//    document.getElementById('active-chat-portrait').class = chats[chatId].portrait + " fas is-rounded";
+    document.getElementById('active-chat-name').textContent = chats[chatId].name;
+    // Render messages
+    renderChatMessages();
+    // Hide notification dot
+    document.getElementById(`chat-notify-${chatId}`).style.display = 'none';
+  }
+
+  function renderChatMessages() {
+    const chatWindow = document.getElementById('chat-window');
+    chatWindow.innerHTML = '';
+    chats[activeChatId].messages.forEach(msg => {
+      displayChatMessage(msg);
+    });
+  }
+
+  // Override displayChatMessage to store per chat
+  function displayChatMessage(chatMessage) {
+    chats[activeChatId].messages.push(chatMessage);
+    const chatWindow = document.getElementById('chat-window');
+    const messageElement = document.createElement('article');
+    const isPlayer = chatMessage.sender === "Player";
+    messageElement.className = `message is-small mb-2 ${isPlayer ? 'is-player' : 'is-ai'}`;
+    messageElement.innerHTML = `
+            <div class="message-header"><p>${chatMessage.sender}</p></div>
+            <div class="message-body message-box">${chatMessage.content.replace(/\n/g, '<br>')}</div>
+        `;
+    chatWindow.appendChild(messageElement);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
+
+  // Example: show notification dot when new message arrives for inactive chat
+  function notifyChat(chatId) {
+    if (chatId !== activeChatId) {
+      document.getElementById(`chat-notify-${chatId}`).style.display = 'inline-block';
+    }
+  }
+
+  // Update sendChatMessage to use activeChatId
+  async function sendChatMessage() {
+    const chatInput = document.getElementById('chat-input');
+    const messageContent = chatInput.value.trim();
+
+    if (messageContent) {
+      displayChatMessage({sender: "Player", content: messageContent});
+      chatInput.value = '';
+
+      try {
+        // Send to server with activeChatId
+        const response = await fetch('/game/chat', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({chatId: activeChatId, message: messageContent})
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const aiResponse = await response.json();
+        if (aiResponse && aiResponse.chatMessage) {
+          displayChatMessage({sender: chats[activeChatId].name, content: aiResponse.chatMessage});
+          if (aiResponse.stats) {
+            updateStats(aiResponse.stats);
+          }
+        }
+      } catch (error) {
+        console.error('Error sending chat message:', error);
+        displayChatMessage({sender: chats[activeChatId].name, content: "There was an error communicating with the server."});
+      }
+    }
+  }
+
+  // Initialize first chat
+  window.onload = function () {
+    fetchInitialStatus();
+    switchChat(activeChatId);
+    if (window.innerWidth <= 768) {
+      showPanel('chat');
+    } else {
+      showPanel('status');
+    }
+  };
+</script>
 </body>
 </html>

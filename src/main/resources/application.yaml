@@ -1,19 +1,3 @@
-game:
-  mockingForRounds: 1
-  mocks:
-    html: true
-    briefing: true
-  genesis-enabled: false
-  start-year: 1931
-  player-nation-name: Deutschland
-  turn-length: "3 month"
-  current-date: "1.1.1931"
-  playerCharacterName: Heinrich Brüning
-  playerCharacterTitle: Chancellor of Germany
-#  gameEngineModel: "llmbg-tooluse-27b-v1.0-i1"
-#  gameEngineModel: "qwen/qwen3-30b-a3b-2507"
-#  gameEngineModel: "mixtral_13b_chat-mlx"
-
 spring:
   application:
     name: TheParchmentThrone
@@ -25,8 +9,361 @@ spring:
         options:
           #          model: llama-3-groq-8b-tool-use
           #model: "llmbg-tooluse-27b-v1.0-i1"
-          model: "openai/gpt-oss-20b:free"
+          model: "qwen/qwen3-30b-a3b-2507"
     vectorstore:
       weaviate:
         host: localhost:9090
         scheme: http
+    mcp.client.toolcallback.enabled: true
+  jackson:
+    default-leniency: true
+
+game:
+  mockingForRounds: 1
+  mocks:
+    html: true
+    briefing: false
+  genesis-enabled: false
+  turn-length: "3 month"
+#  gameEngineModel: "llmbg-tooluse-27b-v1.0-i1"
+#  gameEngineModel: "qwen/qwen3-30b-a3b-2507"
+#  gameEngineModel: "mixtral_13b_chat-mlx"
+
+  status:
+    startYear: 1931
+    playerNationName: Deutschland
+    currentDate: "1.1.1931"
+    playerCharacterName: Heinrich Brüning
+    playerCharacterTitle: Chancellor of Germany
+    briefingYaml: >
+      briefing:
+        date: 1.1.1931
+        resourceStatus:
+          politicalPowerGainRate: 0.42
+          politicalPower: 18.6
+          goldSpent: 124000000
+          goldFromTaxationThisTurn: 98000000
+          goldAfterSpendingAndTaxation: 122000000
+        ongoingProjects:
+          - name: "Reichsbahn Modernization Initiative"
+            status: "In progress"
+            estimatedTimeUntilCompletion: 14 months
+            costThisTurn: 22000000
+        dailyHerald:
+          headline: "Rising Unemployment Sparks Protests in Ruhr Region"
+          content: "Reports from the industrial heartland of the Ruhr indicate growing unrest as unemployment nears 19%. Workers from the steel and coal sectors have begun mass demonstrations demanding job guarantees and wage reforms. Chancellor Brüning has called for 'calm and order,' but opposition leaders warn that without bold action, civil unrest may spiral into violence. The KPD has called for a general strike, while the NSDAP claims the government is 'failing the people.'"
+        upcomingElections:
+          - electionDate: 1932.05.13
+            candidates:
+              - name: "Heinrich Brüning"
+                party: "Zentrumspartei (Z)"
+                pollingResults: "31%"
+              - name: "Adolf Hitler"
+                party: "Nationalsozialistische Deutsche Arbeiterpartei (NSDAP)"
+                pollingResults: "39%"
+              - name: "Paul von Hindenburg"
+                party: "Independent (President)"
+                pollingResults: "24%"
+        events:
+          - description: "The Reichsbahn strikes have escalated into nationwide railway shutdowns, disrupting transport and supply chains across major cities. The government has deployed police to maintain order, but violence has erupted in Berlin and Hamburg."
+            impact: "severe"
+            charactersInvolved:
+              - name: "Heinrich Brüning"
+                role: "Chancellor"
+                quote: "The nation must not be held hostage by radical elements. We will restore order, but we must also address the root causes of despair."
+              - name: "Ernst Thälmann"
+                role: "KPD Leader"
+                quote: "The working class will not be silenced. The time for revolution is near."
+          - description: "A major flood has devastated the Rhineland, destroying farmland and displacing over 50,000 people. The federal government has declared a state of emergency, but relief efforts are hampered by bureaucratic delays and regional shortages."
+            impact: "moderate"
+            charactersInvolved:
+              - name: "Ludwig Kaas"
+                role: "Zentrumspartei Leader"
+                quote: "This is not merely a natural disaster — it is a test of our moral duty to the people. We must act with compassion and speed."
+          - description: "The NSDAP has announced a nationwide campaign to 'reclaim German dignity,' featuring mass rallies in major cities. Their rhetoric has grown increasingly nationalistic, and they are now openly challenging the legitimacy of the Weimar government."
+            impact: "severe"
+            charactersInvolved:
+              - name: "Adolf Hitler"
+                role: "NSDAP Leader"
+                quote: "The time of weakness is over. We shall lead Germany not by compromise, but by strength."
+        projects:
+          - character: "Dr. Albert Einstein"
+            projectName: "National Science Initiative"
+            description: "Establish a centralized research and development agency to promote innovation in engineering, physics, and medicine. This project aims to position Germany as a global leader in scientific advancement, attracting talent and funding from abroad."
+            estimatedCostGold: 18000000
+            estimatedCostPoliticalPower: 3.5
+          - character: "Erich Ludendorff"
+            projectName: "Volunteer National Defense Corps"
+            description: "Mobilize 100,000 former soldiers into a voluntary, state-recognized defense force to strengthen internal security and deter revolutionary activity. This would operate under civilian oversight but with military training and equipment."
+            estimatedCostGold: 25000000
+            estimatedCostPoliticalPower: 4.2
+          - character: "Margarete von Tussch"
+            projectName: "Rural Revitalization Program"
+            description: "Launch a nationwide program to modernize agriculture, provide low-interest loans to farmers, and build infrastructure in rural regions. The goal is to reduce urban migration and stabilize the countryside, which remains a stronghold of conservative and traditionalist values."
+            estimatedCostGold: 32000000
+            estimatedCostPoliticalPower: 2.8
+          - character: "Max Weber (historical)"
+            projectName: "Institute for Public Administration Reform"
+            description: "Create a new civil service academy to train and professionalize government officials, reducing corruption and inefficiency. This would help strengthen the legitimacy of the Weimar state and restore public trust in governance."
+            estimatedCostGold: 14000000
+            estimatedCostPoliticalPower: 3.1
+          - character: "Carl von Ossietzky"
+            projectName: "Free Press and Civic Education Campaign"
+            description: "Fund independent journalism and public education initiatives to counter propaganda, promote democratic values, and strengthen civic engagement. This program would empower citizens to make informed decisions during the upcoming elections."
+            estimatedCostGold: 9000000
+            estimatedCostPoliticalPower: 2.3
+          - character: "Fritz Haber"
+            projectName: "Chemical Industry Modernization Project"
+            description: "Invest in cutting-edge chemical research and industrial expansion, particularly in synthetic fertilizers and dyes. This would boost exports, create high-skilled jobs, and strengthen Germany’s economic independence."
+            estimatedCostGold: 28000000
+            estimatedCostPoliticalPower: 3.7
+          - character: "Gustav Stresemann (deceased, but spirit invoked)"
+            projectName: "Diplomatic Reconciliation Initiative"
+            description: "Reopen dialogue with France and the UK through a series of high-level diplomatic missions, aiming to reduce the burden of the Treaty of Versailles and re-engage Germany in the international community. This would involve symbolic gestures and economic offers to rebuild trust."
+            estimatedCostGold: 16000000
+            estimatedCostPoliticalPower: 4.0
+    decisionYaml: >
+      - action_summary: "The ruler has approved two major initiatives to stabilize the domestic situation and counter rising extremism: (1) The National Employment Stabilization Program, a public works initiative to reduce unemployment by constructing 500 roads and bridges across rural Germany, funded by emergency loans from the Reichsbank; and (2) The German Home Initiative, a state-led housing and social welfare expansion program to build 20,000 homes in the Ruhr region, in partnership with the Zentrum and Catholic Church. Both programs are to be announced simultaneously in a press conference on 2.1.1931, framed as acts of national renewal. The Reichsbank’s emergency credit line will be used to cover 55 million gold in costs, with defense spending preserved. The Reichstag Transparency and Accountability Reform will be leveraged to bolster credibility. The President’s emergency authority under Article 48 will be invoked to bypass parliamentary delays. The press conference will be used to project decisive leadership, with the headline: 'The Reich has spoken. The people will work, and they will have a home.'"
+      - economic_impact:
+        gold_spent: 55000000
+        gold_after_turn: 6200000
+        public_debt_as_gdp_percent: 45.9
+        inflation_rate: 6.7
+      - political_impact:
+        political_power: 48.7
+        political_power_gain_rate: 1.2
+        popularity_score:
+          spd: 0.25
+          kpd: 0.18
+          z: 0.21
+          dnvp: 0.28
+          nsdap: 0.32
+      - military:
+        defense_budget_usd: 690000000
+        budget_as_gdp_percent: 7.3
+      - domestic_factions:
+        industrialists_and_big_business: -0.12
+        trade_unions_and_labor_movement: 0.35
+        catholic_church: -0.18
+      - ongoing_projects:
+        - name: "Reichsbank Modernization Initiative"
+          status: "Completed"
+          cost: 1500000
+      - events:
+        - description: "The Reich announces the National Employment Stabilization Program and the German Home Initiative in a major press conference. The government claims the programs will reduce unemployment and restore national dignity."
+          impact: "severe"
+          status: "resolved"
+      - projects:
+        - name: "National Employment Stabilization Program"
+          status: "Launched"
+          cost: 25000000
+          political_power_cost: 8.5
+        - name: "Workers’ Housing and Social Welfare Expansion"
+          status: "Launched"
+          cost: 30000000
+          political_power_cost: 10.2
+      - diplomacy:
+        alliances:
+          - nation_id: "ITA"
+            type: "strategic"
+            strength: 0.65
+          - nation_id: "HUN"
+            type: "major_power"
+            strength: 0.82
+        rivals:
+          - nation_id: "FRA"
+            type: "great_power_rivalry"
+            strength: -0.91
+          - nation_id: "POL"
+            type: "border dispute rivalry"
+            strength: -0.75
+      - elections:
+        - election_date: "1932.05.13"
+          type: "presidential"
+          status: "active"
+          candidates:
+            - name: "Paul von Hindenburg"
+              party: "Independent (Presidential)"
+              polling_results: 0.41
+            - name: "Adolf Hitler"
+              party: "NSDAP"
+              polling_results: 0.32
+            - name: "Otto Wels"
+              party: "SPD"
+              polling_results: 0.15
+      - status: "turn_complete
+
+    stateJson: >
+      {
+        "nation_id": "DEU",
+        "name": "Deutschland",
+        "general_info": {
+          "capital": "Berlin",
+          "government_type": "Weimar Republic",
+          "head_of_state": "Paul von Hindenburg",
+          "head_of_government": "Heinrich Brüning",
+          "culture": "German",
+          "religion": "Protestant (historically Lutheran)"
+        },
+        "political_system": {
+          "system_type": "Parliamentary democracy with a President as head of state and Chancellor as head of government",
+          "legislative_body": "Reichstag",
+          "election_cycle": {
+            "presidential": {
+              "next_election_date": "1932.05.13",
+              "system": "Indirect election by the National Assembly",
+              "term_length_years": 7
+            },
+            "legislative": {
+              "next_election_date": "1932.07.31",
+              "system": "Proportional representation with party lists",
+              "term_length_years": 4
+            }
+          },
+          "political_parties": [
+            {
+              "id": "spd",
+              "name": "Sozialdemokratische Partei Deutschlands (SPD)",
+              "leader": "Otto Wels",
+              "ideology": ["social democracy"],
+              "governing_role": "Main opposition party",
+              "national_assembly_seats": 107,
+              "popularity_score": 0.25
+            },
+            {
+              "id": "kpd",
+              "name": "Kommunistische Partei Deutschlands (KPD)",
+              "leader": "Ernst Thälmann",
+              "ideology": ["communism"],
+              "governing_role": "Opposition party",
+              "national_assembly_seats": 77,
+              "popularity_score": 0.18
+            },
+            {
+              "id": "z",
+              "name": "Zentrumspartei (Centre Party)",
+              "leader": "Ludwig Kaas",
+              "ideology": ["Christian democracy"],
+              "governing_role": "Coalition partner",
+              "national_assembly_seats": 68,
+              "popularity_score": 0.21
+            },
+            {
+              "id": "dnvp",
+              "name": "Deutschnationale Volkspartei (DNVP)",
+              "leader": "Alfred Hugenberg",
+              "ideology": ["national conservatism"],
+              "governing_role": "Coalition partner",
+              "national_assembly_seats": 41,
+              "popularity_score": 0.28
+            },
+            {
+              "id": "nsdap",
+              "name": "Nationalsozialistische Deutsche Arbeiterpartei (NSDAP)",
+              "leader": "Adolf Hitler",
+              "ideology": ["fascism"],
+              "governing_role": "Opposition party",
+              "national_assembly_seats": 107,
+              "popularity_score": 0.32
+            }
+          ],
+          "governing_coalition": {
+            "name": "Brüning government coalition",
+            "members": ["spd", "z"],
+            "head": "Heinrich Brüning",
+            "mandate_strength_score": 0.48
+          }
+        },
+        "domestic_factions": [
+          {
+            "name": "Industrialists and Big Business",
+            "influence_score": 0.75,
+            "ideology_tags": ["capitalism"],
+            "relationship_to_government_strength": -0.12
+          },
+          {
+            "name": "Trade Unions and Labor Movement",
+            "influence_score": 0.68,
+            "ideology_tags": ["socialism"],
+            "relationship_to_government_strength": 0.35
+          },
+          {
+            "name": "Catholic Church",
+            "influence_score": 0.72,
+            "ideology_tags": ["conservatism"],
+            "relationship_to_government_strength": -0.18
+          }
+        ],
+        "economy": {
+          "gdp_usd": 95400000000,
+          "gdp_growth_rate": 2.3,
+          "inflation_rate": 6.7,
+          "unemployment_rate": 18.8,
+          "public_debt_as_gdp_percent": 45.9,
+          "major_industries": ["heavy industry", "agriculture", "chemicals"],
+          "economic_stability_score": 0.37
+        },
+        "military": {
+          "active_personnel": 120000,
+          "reserve_personnel": 500000,
+          "defense_budget_usd": 690000000,
+          "budget_as_gdp_percent": 7.3,
+          "military_power_score": 0.48,
+          "branches": ["Army", "Navy"],
+          "foreign_deployments": [
+            {
+              "country": "China",
+              "mission": "Protection of German business interests and nationals during the Chinese Civil War."
+            }
+          ]
+        },
+        "diplomacy": {
+          "alliances": [
+            {
+              "nation_id": "ITA",
+              "type": "strategic",
+              "strength": 0.65
+            },
+            {
+              "nation_id": "HUN",
+              "type": "major_power",
+              "strength": 0.82
+            }
+          ],
+          "rivals": [
+            {
+              "nation_id": "FRA",
+              "type": "great_power_rivalry",
+              "strength": -0.91
+            },
+            {
+              "nation_id": "POL",
+              "type": "border dispute rivalry",
+              "strength": -0.75
+            }
+          ],
+          "affiliations": [
+            {
+              "organization_id": "League of Nations",
+              "status": "Member state",
+              "influence_score": 0.43
+            },
+            {
+              "organization_id": "World Economic Conference (1927)",
+              "status": "Attendee and signatory to the Young Plan",
+              "influence_score": 0.58
+            }
+          ]
+        },
+        "key_actions": [
+          {
+            "action_id": "YoungPlanAgreement",
+            "description": "Germany agrees to the terms of the Young Plan, restructuring war reparations payments.",
+            "date": "1930.06.25",
+            "type": "Economic policy change",
+            "impact_score": 0.78,
+            "tags": ["economics", "international relations"]
+          }
+        ]
+      }
+    

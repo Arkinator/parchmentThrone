@@ -1,0 +1,11 @@
+{
+  "YoungPlan": {
+    "projectName": "YoungPlanAgreement",
+    "status": "IN_PROGRESS",
+    "description": "Germany agrees to the terms of the Young Plan, restructuring war reparations payments.",
+    "estimatedCostGold": 1000000000,
+    "startDate": "1931-01-01",
+    "endDate": "1985-12-31",
+    "completionPercentage": 0.0
+  }
+}

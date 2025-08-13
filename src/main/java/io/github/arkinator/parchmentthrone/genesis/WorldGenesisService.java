@@ -36,7 +36,7 @@ public class WorldGenesisService {
     log.info("ApplicationReadyEvent empfangen. Überprüfe, ob die Weltgenerierung aktiviert ist.");
 
     mcpBasicStatus.updateGameData(GameDataDto.builder()
-      .nation(properties.getPlayerNationName())
+      .nation(properties.getStatus().getPlayerNationName())
       .currentDate(LocalDate.of(properties.getStartYear(), 1, 1).toString())
       .politicalPower(100.)
       .money(100.)
@@ -49,7 +49,7 @@ public class WorldGenesisService {
     }
     new GenesisExecutor(
       properties.getStartYear(),
-      properties.getPlayerNationName(),
+      properties.getStatus().getPlayerNationName(),
       mcpBasicStatus,
       systemPromptResource,
       structureNationResource,

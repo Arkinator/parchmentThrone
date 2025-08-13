@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -30,8 +31,7 @@ public class GameChat {
   ChatClient chatClient;
   List<Message> history = new ArrayList<>();
   GameProperties gameProperties;
-  StatusService statusService;
-  ToolCallingChatOptions chatOptions;
+  ProjectService projectService;
   Resource initialPrompt;
   @Getter Map<String, String> placeholders;
 
@@ -48,7 +48,7 @@ public class GameChat {
                 throw new RuntimeException("Failed to access field: " + field.getName(), e);
               }
             });
-//    st.add("stateJSON", statusService.getNationStatus("germany"));
+    //    st.add("stateJSON", statusService.getNationStatus("germany"));
     // add additional entries to the template
     Stream.of(additionalEntries).forEach(entry -> st.add(entry.getKey(), entry.getValue()));
 
@@ -60,12 +60,13 @@ public class GameChat {
     history.add(new UserMessage(prompt));
     val reply =
         chatClient
-            .prompt(Prompt.builder().messages(history).chatOptions(chatOptions).build())
+            .prompt(Prompt.builder().messages(history).build())
+            .tools(projectService)
             .call()
             .chatResponse()
             .getResult()
             .getOutput();
-    log.info("Reply to message: {}", reply.getText());
+    // log.info("Reply to message: {}", reply.getText());
     history.add(reply);
     return reply.getText();
   }
@@ -73,18 +74,26 @@ public class GameChat {
   @SneakyThrows
   public String initialize() {
     history.clear();
+    final SystemMessage systemMessage =
+        new SystemMessage(
+            "Use HTML tags to format the output, such as <b> for bold text, <i> for italic text, and <ul> for lists. Do not use any other formatting or special characters.");
+    history.add(systemMessage);
+    chatClient.prompt(Prompt.builder().messages(systemMessage).build()).call();
     String promptTemplate =
         new String(initialPrompt.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
     String resolvedPrompt = promptTemplate;
     for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-      resolvedPrompt = resolvedPrompt.replace("{" + entry.getKey() + "}", entry.getValue());
+      if (entry.getValue() != null) {
+        resolvedPrompt = resolvedPrompt.replace("{" + entry.getKey() + "}", entry.getValue());
+      }
     }
 
     history.add(new UserMessage(resolvedPrompt));
     val reply =
         chatClient
-            .prompt(Prompt.builder().messages(history).chatOptions(chatOptions).build())
+            .prompt(Prompt.builder().messages(history).build())
+            .tools(projectService)
             .call()
             .chatResponse()
             .getResult()

@@ -13,21 +13,12 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "game")
 public class GameProperties {
 
-  private static final ObjectMapper OBJECT_MAPPER =
-      new ObjectMapper().setSerializationInclusion(Include.NON_NULL);
-
   private boolean genesisEnabled;
   private int startYear;
-  private String playerNationName;
-  private String playerCharacterName;
-  private String playerCharacterTitle;
   private String turnLength;
   private String gameEngineModel;
   private String currentDate;
   private Map<String, String> mocks;
   private Integer mockingForRounds;
-
-  public Map<String, Object> toMap() {
-    return OBJECT_MAPPER.convertValue(this, new TypeReference<>() {});
-  }
+  private GameStatus status;
 }

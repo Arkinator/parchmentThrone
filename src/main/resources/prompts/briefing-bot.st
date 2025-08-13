@@ -4,7 +4,7 @@ You will generate a briefing for the player, summarizing the key points and pote
 
 Use accurate words and phrases to describe the current state of the {playerNationName} at the date of {currentDate}.
 
-Use HTML and Bulma to format the output, so that it is easy to read and visually appealing. Use headings, paragraphs, lists, emoticons and other HTML elements to structure the content, styled with Bulma classes for clear readability. Return only the HTML content, without any additional text or explanations. The output should only be a single div-tag to be embedded in an already existing Website. No escaping or Markdown is needed. Omit triple-dashes and any other formatting that is not HTML.
+Use HTML and Bulma to format the output, so that it is easy to read and visually appealing. Use headings, paragraphs, lists, emoticons and other HTML elements to structure the content, styled with Bulma classes for clear readability. Return only the HTML content, without any additional text or explanations. The output should only be a single div-tag to be embedded in an already existing ÅWebsite. No escaping or Markdown is needed. Omit triple-dashes and any other formatting that is not HTML.
 
 The briefing should include the following elements:
 
