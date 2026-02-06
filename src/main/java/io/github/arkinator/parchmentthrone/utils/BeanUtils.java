@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class BeanUtils {
   private static final ObjectMapper OBJECT_MAPPER =
-    new ObjectMapper().setSerializationInclusion(Include.NON_NULL);
+      new ObjectMapper().setSerializationInclusion(Include.NON_NULL);
 
   public static Map<String, Object> toMap(Object target) {
     return OBJECT_MAPPER.convertValue(target, new TypeReference<>() {});

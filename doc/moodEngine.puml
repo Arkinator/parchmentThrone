@@ -1,0 +1,74 @@
+@startuml
+title Political Simulation Core Model
+
+' === Core Domain ===
+class Event {
+  - id: UUID
+  - name: String
+  - effects: List<Effect>
+}
+
+class Effect {
+  - issue: Issue
+  - deltaSalience: double
+  - impactValue: double
+}
+
+class NarrativeSpace {
+  - issues: Map<Issue, Double>  ' salience values
+  + updateFromEffects(effects: List<Effect>)
+  + topIssues(limit: int): List<Issue>
+}
+
+class Issue {
+  - name: String
+}
+
+' === Social Layer ===
+class Milieu {
+  - id: UUID
+  - name: String
+  - populationShare: double
+  - valueWeights: Map<Issue, Double>
+  - mood: Mood
+  + weightFor(issue: Issue): double
+}
+
+class Mood {
+  - stability: double
+  - optimism: double
+  - anger: double
+  - fear: double
+  + updateFromNarrative(narrative: NarrativeSpace)
+}
+
+' === Political Layer ===
+class Party {
+  - id: UUID
+  - name: String
+  - proficiency: Map<Issue, Double>  ' constant, does not change here
+}
+
+class PollResult {
+  - results: Map<Party, Double>  ' percentages normalized to 100
+  + normalize()
+}
+
+class PollEngine {
+  + calculatePolls(milieus: List<Milieu>, parties: List<Party>, narrative: NarrativeSpace): PollResult
+}
+
+' === Relationships ===
+Event --> Effect
+Effect --> Issue
+NarrativeSpace --> Issue
+NarrativeSpace "1" o-- "*" Effect : updated by
+Milieu --> Issue : has value weights
+Milieu --> Mood
+Party --> Issue : has proficiency
+PollEngine --> Milieu
+PollEngine --> Party
+PollEngine --> NarrativeSpace
+PollEngine --> PollResult
+
+@enduml

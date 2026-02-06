@@ -16,9 +16,6 @@ import lombok.val;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.ChatClient.CallResponseSpec;
 import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.openai.OpenAiChatOptions;
-import org.springframework.ai.openai.api.ResponseFormat;
-import org.springframework.ai.openai.api.ResponseFormat.Type;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,9 +42,6 @@ public class GameEngineService {
   @Value("classpath:/prompts/game-engine.st")
   private Resource gameEnginePrompt;
 
-  @Value("classpath:/germany1931.json")
-  private Resource initJsonResource;
-
   @Value("${spring.ai.openai.base-url}")
   private String openAiBaseUrl;
 
@@ -55,6 +49,7 @@ public class GameEngineService {
   @Autowired private AdvisorService advisorService;
   @Autowired private ChatModel chatModel;
   @Autowired private final VectorStore vectorStore;
+  @Autowired private SimulationEngineService simulationEngineService;
 
   private int turnCounter = 0;
   @Autowired private GameStatus gameStatus;
@@ -92,14 +87,13 @@ public class GameEngineService {
 
   private String generateBriefingYaml() {
     log.info("Generating briefing yaml...");
-    final CallResponseSpec responseSpec = ChatClient.create(this.chatModel)
-      .prompt()
-      .user(spec -> spec.text(eventBotPrompt).params(generatePlaceholderMap()))
-      .tools(projectService)
-      .call();
-    val briefingYaml =
-        responseSpec
-            .content();
+    final CallResponseSpec responseSpec =
+        ChatClient.create(this.chatModel)
+            .prompt()
+            .user(spec -> spec.text(eventBotPrompt).params(generatePlaceholderMap()))
+            .tools(projectService)
+            .call();
+    val briefingYaml = responseSpec.content();
 
     log.info("briefingResult YAML generated: {}", briefingYaml);
     return briefingYaml;
@@ -134,22 +128,7 @@ public class GameEngineService {
     log.info("Ending current turn!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     val output = advisorService.generateDecisionsYaml();
     turnCounter++;
-    val nextTurnJson =
-        chatClient
-            .prompt()
-//            .options(
-//                OpenAiChatOptions.builder()
-//                    .responseFormat(ResponseFormat.builder().type(Type.JSON_SCHEMA).build())
-//                    .build())
-            .user(
-                spec ->
-                    spec.text(gameEnginePrompt)
-                        .params(generatePlaceholderMap())
-                        .param("decisionsYaml", output))
-            .call()
-            .chatResponse();
-    gameProperties.getStatus().setStateJson(nextTurnJson.getResult().getOutput().getText());
-    log.info("updated JSON: \n{}", gameProperties.getStatus().getStateJson());
+    simulationEngineService.runRound();
     return getStatusReport();
   }
 

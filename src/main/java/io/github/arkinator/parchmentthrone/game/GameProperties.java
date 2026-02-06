@@ -1,8 +1,7 @@
 package io.github.arkinator.parchmentthrone.game;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.*;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Map;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,9 +1,8 @@
 package io.github.arkinator.parchmentthrone.mcp.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Map;
 import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @Data
 public class PoliticalIssueDto {

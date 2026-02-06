@@ -1,9 +1,8 @@
 package io.github.arkinator.parchmentthrone.mcp.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Reusable DTOs for components that can be part of many systems.")
 @Data

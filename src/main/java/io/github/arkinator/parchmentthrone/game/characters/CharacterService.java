@@ -14,9 +14,7 @@ import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.ai.vectorstore.weaviate.WeaviateVectorStore;
 import org.springframework.stereotype.Service;
 
-/**
- *TODO: curently out-of-order, schema needed for character generation
- */
+/** TODO: curently out-of-order, schema needed for character generation */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -124,15 +122,22 @@ public class CharacterService {
 """;
 
   @Tool(description = "Generate a new character with specified attributes")
-  public void generateCharacter(String name, String description, @ToolParam(description = "about 10 of: factions, parties, attitudes") List<String> tags) {
+  public void generateCharacter(
+      String name,
+      String description,
+      @ToolParam(description = "about 10 of: factions, parties, attitudes") List<String> tags) {
     log.info("Generating character with name {}, description {}", name, description);
     String prompt =
         String.format(
             "Generate a historically accurate character for a medieval setting. "
                 + "Name: %s. Description: %s. Factions/Tags: %s. "
                 + "Return only the character's name, description, and factions/tags in JSON format."
-                + "response_format: {type: \"json_schema\", schema: \""+characterSchema+"\"}",
-            name, description, String.join(", ", tags));
+                + "response_format: {type: \"json_schema\", schema: \""
+                + characterSchema
+                + "\"}",
+            name,
+            description,
+            String.join(", ", tags));
     val character = chatClient.prompt(prompt).call().entity(GameCharacter.class);
     embeddingModel.embed(name);
     vectorStore.add(
@@ -143,16 +148,16 @@ public class CharacterService {
                 .metadata(Map.of("tags", String.join(",", tags)))
                 .build()));
     log.info("Generated character {}: \n{}", name, character.toJson());
-//    return character;
+    //    return character;
   }
 
   @Tool(description = "Retrieve a character by their name")
   public GameCharacter getCharacterByName(String name) {
     log.info("Retrieving character by name: {}", name);
     return vectorStore.similaritySearch(name).stream()
-      .peek(character -> log.info("Found character with score {}", character.getScore()))
-//        .filter(doc -> doc.getMetadata().get("name").equals(name))
-      .sorted(Comparator.comparing(Document::getScore))
+        .peek(character -> log.info("Found character with score {}", character.getScore()))
+        //        .filter(doc -> doc.getMetadata().get("name").equals(name))
+        .sorted(Comparator.comparing(Document::getScore))
         .findFirst()
         .map(GameCharacter::fromDocument)
         .orElse(null);
@@ -160,14 +165,18 @@ public class CharacterService {
 
   @Tool(description = "Retrieve characters by factions they belong to")
   public List<GameCharacter> getCharactersByTags(List<String> tags) {
-    final List<GameCharacter> result = vectorStore.similaritySearch(String.join(" ", tags)).stream()
-      .map(GameCharacter::fromDocument)
-      .filter(
-        character ->
-          character.getFactions() != null
-          && tags.stream().anyMatch(tag -> character.getFactions().contains(tag)))
-      .toList();
-    log.info("Retrieving characters by tags: {}, returning {}", String.join(", ", tags), result.stream().map(GameCharacter::getName).toList());
+    final List<GameCharacter> result =
+        vectorStore.similaritySearch(String.join(" ", tags)).stream()
+            .map(GameCharacter::fromDocument)
+            .filter(
+                character ->
+                    character.getFactions() != null
+                        && tags.stream().anyMatch(tag -> character.getFactions().contains(tag)))
+            .toList();
+    log.info(
+        "Retrieving characters by tags: {}, returning {}",
+        String.join(", ", tags),
+        result.stream().map(GameCharacter::getName).toList());
     return result;
   }
 }

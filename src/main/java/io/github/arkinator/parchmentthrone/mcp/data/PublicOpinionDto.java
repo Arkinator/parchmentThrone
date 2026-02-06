@@ -1,11 +1,12 @@
 package io.github.arkinator.parchmentthrone.mcp.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Map;
 import lombok.Data;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
-@Schema(description = "DTO for overall public sentiment. Based on concepts like societal polarization and trust in institutions.")
+@Schema(
+    description =
+        "DTO for overall public sentiment. Based on concepts like societal polarization and trust in institutions.")
 @Data
 public class PublicOpinionDto {
   @Schema(description = "Popular support score, from 0.0 to 1.0")

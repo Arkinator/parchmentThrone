@@ -1,10 +1,6 @@
 package io.github.arkinator.parchmentthrone.game;
 
-import io.github.arkinator.parchmentthrone.game.dto.GameStatsDto;
-import io.github.arkinator.parchmentthrone.mcp.StatusService;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,14 +8,10 @@ import java.util.stream.Stream;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.model.tool.ToolCallingChatOptions;
-import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.core.io.Resource;
 import org.stringtemplate.v4.ST;
 

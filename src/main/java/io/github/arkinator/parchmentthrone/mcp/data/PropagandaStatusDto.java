@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.Data;
 
-@Schema(description = "DTO for state of propaganda and information control. Reflects social science findings on media control and public perception.")
+@Schema(
+    description =
+        "DTO for state of propaganda and information control. Reflects social science findings on media control and public perception.")
 @Data
 public class PropagandaStatusDto {
   @Schema(description = "0.0 to 1.0, how effective the state's message is")

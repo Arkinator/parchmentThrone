@@ -1,15 +1,13 @@
 package io.github.arkinator.parchmentthrone;
 
 import io.github.arkinator.parchmentthrone.game.GameProperties;
-import java.net.http.HttpClient;
-import java.time.Duration;
+import io.github.arkinator.parchmentthrone.game.domain.*;
+import io.github.arkinator.parchmentthrone.game.domain.Politics.RegimeType;
+import java.util.Map;
 import lombok.Data;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.model.NoopApiKey;
-import org.springframework.ai.openai.OpenAiChatModel;
-import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.client.JdkClientHttpRequestFactory;
-import org.springframework.http.client.reactive.JdkClientHttpConnector;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
 @Data
@@ -43,8 +37,9 @@ public class ParchmentThroneApplication {
   }
 
   @Bean
-  public ChatClient chatClient(@Autowired GameProperties gameProperties, @Autowired ChatClient.Builder builder) {
-/*    OpenAiApi openAiApi =
+  public ChatClient chatClient(
+      @Autowired GameProperties gameProperties, @Autowired ChatClient.Builder builder) {
+    /*    OpenAiApi openAiApi =
         OpenAiApi.builder()
             .baseUrl(openAiBaseUrl)
             .apiKey("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")

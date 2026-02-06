@@ -1,5 +1,6 @@
 package io.github.arkinator.parchmentthrone.game.dto;
 
+import io.github.arkinator.parchmentthrone.game.domain.CountryState;
 import lombok.Builder;
 import lombok.Value;
 
@@ -14,4 +15,12 @@ public class GameProjectEntity {
   String startDate;
   String endDate;
   double completionPercentage;
+  CountryState impacts;
+
+  public CountryState applyTo(CountryState state) {
+    if (impacts == null) {
+      return state;
+    }
+    return state.applyDelta(impacts);
+  }
 }

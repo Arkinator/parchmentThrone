@@ -13,28 +13,31 @@ import org.springframework.stereotype.Component;
 @Component
 public class CallLoggingAspect {
 
-  private static final ObjectWriter PRETTY_PRINTER = new ObjectMapper()
-    .writerWithDefaultPrettyPrinter();
+  private static final ObjectWriter PRETTY_PRINTER =
+      new ObjectMapper().writerWithDefaultPrettyPrinter();
   private static final Logger logger = LoggerFactory.getLogger(CallLoggingAspect.class);
 
   @Pointcut("@within(io.github.arkinator.parchmentthrone.aop.CallLogging)")
-  public void beanAnnotatedWithCallLogging() {
-  }
+  public void beanAnnotatedWithCallLogging() {}
 
   @Before("beanAnnotatedWithCallLogging() && execution(* *(..))")
   @SneakyThrows
   public void logMethodEntry(JoinPoint joinPoint) {
-    logger.info("Entering: {}.{} with args: {}",
-      joinPoint.getSignature().getDeclaringTypeName(),
-      joinPoint.getSignature().getName(),
-      PRETTY_PRINTER.writeValueAsString(joinPoint.getArgs()));
+    logger.info(
+        "Entering: {}.{} with args: {}",
+        joinPoint.getSignature().getDeclaringTypeName(),
+        joinPoint.getSignature().getName(),
+        PRETTY_PRINTER.writeValueAsString(joinPoint.getArgs()));
   }
 
-  @AfterReturning(pointcut = "beanAnnotatedWithCallLogging() && execution(* *(..))", returning = "result")
+  @AfterReturning(
+      pointcut = "beanAnnotatedWithCallLogging() && execution(* *(..))",
+      returning = "result")
   public void logMethodExit(JoinPoint joinPoint, Object result) {
-    logger.trace("Exiting: {}.{} - return: {}",
-      joinPoint.getSignature().getDeclaringTypeName(),
-      joinPoint.getSignature().getName(),
-      result);
+    logger.trace(
+        "Exiting: {}.{} - return: {}",
+        joinPoint.getSignature().getDeclaringTypeName(),
+        joinPoint.getSignature().getName(),
+        result);
   }
 }

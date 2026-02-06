@@ -16,7 +16,8 @@ public class VassalDto {
   @Schema(description = "The individual who leads the vassal. This reuses the KeyFigureDto.")
   private KeyFigureDto leader;
 
-  @Schema(description = "A score representing their relative power (e.g., military strength, wealth)")
+  @Schema(
+      description = "A score representing their relative power (e.g., military strength, wealth)")
   private double powerScore;
 
   @Schema(description = "A score representing their loyalty to the monarch (e.g., 0.0 to 1.0)")

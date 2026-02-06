@@ -13,7 +13,9 @@ public class MonarchyDto implements PoliticalSystemDto {
   @Schema(description = "Succession law, e.g., 'Hereditary', 'Elective'")
   private String successionLaw;
 
-  @Schema(description = "Monarch's influence, 0.0 to 1.0, representing power from absolute to constitutional")
+  @Schema(
+      description =
+          "Monarch's influence, 0.0 to 1.0, representing power from absolute to constitutional")
   private double monarchInfluence;
 
   @Schema(description = "Name of the ruling dynasty")

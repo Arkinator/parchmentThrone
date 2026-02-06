@@ -1,7 +1,7 @@
 package io.github.arkinator.parchmentthrone.mcp.data;
 
-import lombok.Data;
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class ResourceStatusDto {

@@ -18,14 +18,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class WorldGenesisService {
 
-  @Autowired
-  private GameProperties properties;
+  @Autowired private GameProperties properties;
+
   @Value("classpath:/prompts/world-genesis-system-prompt.st")
   private Resource systemPromptResource;
+
   @Value("classpath:/prompts/structure-nation.st")
   private Resource structureNationResource;
+
   @Value("${spring.ai.openai.base-url}")
   private String openAiBaseUrl;
+
   @Value("${spring.ai.openai.chat.options.model}")
   private String model;
 
@@ -35,26 +38,27 @@ public class WorldGenesisService {
   public void onApplicationReady() {
     log.info("ApplicationReadyEvent empfangen. Überprüfe, ob die Weltgenerierung aktiviert ist.");
 
-    mcpBasicStatus.updateGameData(GameDataDto.builder()
-      .nation(properties.getStatus().getPlayerNationName())
-      .currentDate(LocalDate.of(properties.getStartYear(), 1, 1).toString())
-      .politicalPower(100.)
-      .money(100.)
-      .mentalEnergy(100.)
-      .build());
+    mcpBasicStatus.updateGameData(
+        GameDataDto.builder()
+            .nation(properties.getStatus().getPlayerNationName())
+            .currentDate(LocalDate.of(properties.getStartYear(), 1, 1).toString())
+            .politicalPower(100.)
+            .money(100.)
+            .mentalEnergy(100.)
+            .build());
 
     if (!properties.isGenesisEnabled()) {
       log.info("Weltgenerierung ist in 'application.yaml' deaktiviert. Überspringe den Prozess.");
       return;
     }
     new GenesisExecutor(
-      properties.getStartYear(),
-      properties.getStatus().getPlayerNationName(),
-      mcpBasicStatus,
-      systemPromptResource,
-      structureNationResource,
-      openAiBaseUrl,
-      model
-    ).execute();
+            properties.getStartYear(),
+            properties.getStatus().getPlayerNationName(),
+            mcpBasicStatus,
+            systemPromptResource,
+            structureNationResource,
+            openAiBaseUrl,
+            model)
+        .execute();
   }
 }

@@ -23,8 +23,8 @@ public class DemocracyDto implements PoliticalSystemDto {
   private int nextElectionTurn;
 
   @Schema(
-    description = "Recent election results by party. Example: {\"Conservative Party\": 0.45, \"Socialist Front\": 0.35}"
-  )
+      description =
+          "Recent election results by party. Example: {\"Conservative Party\": 0.45, \"Socialist Front\": 0.35}")
   private Map<String, Double> recentElectionResults;
 
   @Schema(description = "List of political parties.")

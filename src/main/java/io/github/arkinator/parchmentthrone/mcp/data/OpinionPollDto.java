@@ -1,9 +1,8 @@
 package io.github.arkinator.parchmentthrone.mcp.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Map;
 import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @Data
 public class OpinionPollDto {
@@ -14,12 +13,10 @@ public class OpinionPollDto {
   private int turnNumber;
 
   @Schema(
-    description = "Poll results by party, e.g., {\"Conservative Party\": 0.42, \"Socialist Front\": 0.38}"
-  )
+      description =
+          "Poll results by party, e.g., {\"Conservative Party\": 0.42, \"Socialist Front\": 0.38}")
   private Map<String, Double> results;
 
-  @Schema(
-    description = "Polling methodology, e.g., \"Online Survey\", \"Phone Interviews\""
-  )
+  @Schema(description = "Polling methodology, e.g., \"Online Survey\", \"Phone Interviews\"")
   private String methodology;
 }

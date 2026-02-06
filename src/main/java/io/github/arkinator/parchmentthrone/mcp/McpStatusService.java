@@ -2,6 +2,7 @@ package io.github.arkinator.parchmentthrone.mcp;
 
 import static java.beans.Introspector.getBeanInfo;
 import static org.springframework.beans.BeanUtils.copyProperties;
+
 import io.github.arkinator.parchmentthrone.aop.CallLogging;
 import io.github.arkinator.parchmentthrone.mcp.data.*;
 import io.github.arkinator.parchmentthrone.mcp.data.RecentEventsDto.EventDto;
@@ -105,7 +106,6 @@ public class McpStatusService {
     existing.getEvents().add(eventDto);
   }
 
-
   public void updateInternalStability(String nationName, InternalStabilityDto status) {
     InternalStabilityDto existing = internalStabilityMap.get(nationName);
     if (existing == null) {
@@ -123,21 +123,23 @@ public class McpStatusService {
       throw new RuntimeException(e);
     }
     return java.util.Arrays.stream(beanInfo.getPropertyDescriptors())
-      .map(java.beans.PropertyDescriptor::getName)
-      .filter(name -> {
-        try {
-          return java.util.Arrays.stream(beanInfo.getPropertyDescriptors())
-            .anyMatch(pd -> {
+        .map(java.beans.PropertyDescriptor::getName)
+        .filter(
+            name -> {
               try {
-                return pd.getReadMethod().invoke(source) == null;
+                return java.util.Arrays.stream(beanInfo.getPropertyDescriptors())
+                    .anyMatch(
+                        pd -> {
+                          try {
+                            return pd.getReadMethod().invoke(source) == null;
+                          } catch (Exception e) {
+                            return false;
+                          }
+                        });
               } catch (Exception e) {
                 return false;
               }
-            });
-        } catch (Exception e) {
-          return false;
-        }
-      })
-      .toArray(String[]::new);
+            })
+        .toArray(String[]::new);
   }
 }

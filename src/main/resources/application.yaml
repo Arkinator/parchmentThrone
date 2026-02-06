@@ -367,3 +367,48 @@ game:
         ]
       }
     
+
+    currentState:
+      demography:
+        population: 65000000
+        growthRate: 0.005
+        ageDistribution:
+          "0-14": 0.25
+          "15-64": 0.65
+          "65+": 0.10
+        urbanization: 0.70
+        migrationBalance: -0.01
+
+      economy:
+        gdpPerCapita: 800.0
+        inequality: 0.70
+        productivity: 0.60
+        eliteSurplus: 0.40
+        subsistenceSecurity: 0.30
+
+      stateCapacity:
+        bureaucracy: 0.50
+        military: 0.30
+        taxation: 0.40
+        lawEnforcement: 0.50
+        corruption: 0.60
+
+      society:
+        cohesion: 0.30
+        unrest: 0.70
+        trustInInstitutions: 0.20
+        culturalDiversity: 0.50
+        religionInfluence: 0.40
+
+      politics:
+        regimeType: "DEMOCRACY"
+        legitimacy: 0.30
+        eliteCompetition: 0.80
+        inclusivity: 0.40
+        repression: 0.60
+
+      environment:
+        arableLand: 0.60
+        resourceBase: 0.50
+        climateStress: 0.30
+        pollution: 0.40
